@@ -1,63 +1,35 @@
-import { readFileSync } from 'fs';
-import { FilmType } from '../../types/films.type.js';
-import { GenresType } from '../../types/genres.type.js';
+import EventEmitter from 'events';
+import { createReadStream } from 'fs';
 import { FileReaderInterface } from './file-reader.interface.js';
 
-export default class TSVFileReader implements FileReaderInterface {
-  private rawData = '';
-
-  constructor(public filename: string) { }
-
-  public read(): void {
-    this.rawData = readFileSync(this.filename, { encoding: 'utf8' });
+export default class TSVFileReader extends EventEmitter implements FileReaderInterface {
+  constructor(public filename: string) {
+    super();
   }
 
-  public toArray(): FilmType[] {
-    if (!this.rawData) {
-      return [];
+  public async read(): Promise<void> {
+    const stream = createReadStream(this.filename, {
+      highWaterMark: 16384,
+      encoding: 'utf-8',
+    });
+
+
+    let lineRead = '';
+    let endLinePosition = -1;
+    let importedRowCount = 0;
+
+    for await (const chunk of stream) {
+      lineRead += chunk.toString();
+
+      while ((endLinePosition = lineRead.indexOf('\n')) >= 0) {
+        const completeRow = lineRead.slice(0, endLinePosition + 1);
+        lineRead = lineRead.slice(++endLinePosition);
+        importedRowCount++;
+
+        this.emit('line', completeRow);
+      }
     }
 
-    return this.rawData
-      .split('\n')
-      .filter((row) => row.trim() !== '')
-      .map((line) => line.split('\t'))
-      .map(([
-        name,
-        description,
-        createdDate,
-        genre,
-        released,
-        rating,
-        previewLink,
-        videoLink,
-        starring,
-        director,
-        runTime,
-        commentsAmount,
-        userName,
-        userMail,
-        userAvatar,
-        posterImage,
-        backgroundImage,
-        backgroundColor
-      ]) => ({
-        name,
-        description,
-        postDate: new Date(createdDate),
-        genre: GenresType[genre as 'Comedy' | 'Crime' | 'Documentary' | 'Drama' | 'Horror' | 'Family' | 'Romance' | 'Scifi' | 'Thriller'],
-        released: released,
-        rating: Number(rating),
-        previewLink,
-        videoLink,
-        starring: starring.split(', ')
-          .map((actor) => (actor)),
-        director,
-        runTime: Number(runTime),
-        commentsAmount: Number(commentsAmount),
-        user: { name: userName, mail: userMail, avatar: userAvatar },
-        posterImage,
-        backgroundImage,
-        backgroundColor
-      }));
+    this.emit('end', importedRowCount);
   }
 }

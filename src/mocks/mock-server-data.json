@@ -1,0 +1,112 @@
+{
+    "api": {
+      "name": [
+        "Shutter Island",
+        "Red Heat",
+        "Fast & Furious",
+        "Intouchables",
+        "Trainspotting"
+      ],
+      "description": [
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat",
+        "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
+        "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+        "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo."
+      ],
+      "genre": [
+        "Comedy",
+        "Crime",
+        "Documentary",
+        "Drama",
+        "Horror",
+        "Family",
+        "Romance",
+        "Scifi",
+        "Thriller"
+      ],
+      "released": [
+        "2000",
+        "2001",
+        "2002",
+        "2003",
+        "2004"
+      ],
+      "previewLink": [
+        "https://www.imdb.com/video/vi1317709849/?playlistId=tt0076759&ref_=tt_ov_vi",
+        "https://www.imdb.com/video/vi1317709849/?playlistId=tt0076759&ref_=tt_ov_vi",
+        "https://www.imdb.com/video/vi1317709849/?playlistId=tt0076759&ref_=tt_ov_vi",
+        "https://www.imdb.com/video/vi1317709849/?playlistId=tt0076759&ref_=tt_ov_vi",
+        "https://www.imdb.com/video/vi1317709849/?playlistId=tt0076759&ref_=tt_ov_vi"
+      ],
+      "videoLink": [
+        "https://www.imdb.com/video/vi1317709849/?playlistId=tt0076759&ref_=tt_ov_vi",
+        "https://www.imdb.com/video/vi1317709849/?playlistId=tt0076759&ref_=tt_ov_vi",
+        "https://www.imdb.com/video/vi1317709849/?playlistId=tt0076759&ref_=tt_ov_vi",
+        "https://www.imdb.com/video/vi1317709849/?playlistId=tt0076759&ref_=tt_ov_vi",
+        "https://www.imdb.com/video/vi1317709849/?playlistId=tt0076759&ref_=tt_ov_vi"
+      ],
+      "starring": [
+        "Иван Иванов",
+        "Олег Сидоров",
+        "Пьер Безухов",
+        "Роланд Дискейн",
+        "Холи Гибни"
+      ],
+      "director": [
+        "Иван Иванов",
+        "Олег Сидоров",
+        "Пьер Безухов",
+        "Роланд Дискейн",
+        "Холи Гибни"
+      ],
+      "users": [
+        {
+          "name": "Иван Иванов",
+          "mail": "snow@pisem.local",
+          "avatar": "user.jpg"
+        },
+        {
+          "name": "Олег Сидоров",
+          "mail": "president@dka.local",
+          "avatar": "photo.jpg"
+        },
+        {
+          "name": "Пьер Безухов",
+          "mail": "fish@big.local",
+          "avatar": "awesome-avatar.jpg"
+        },
+        {
+          "name": "Роланд Дискейн",
+          "mail": "test@pisem.local",
+          "avatar": "roland.jpg"
+        },
+        {
+          "name": "Холи Гибни",
+          "mail": "freedom@pisem.local",
+          "avatar": "smit.jpg"
+        }
+      ],
+      "posterImage": [
+        "poster1.jpg",
+        "poster2.jpg",
+        "poster3.jpg",
+        "poster4.jpg",
+        "poster5.jpg"
+      ],
+      "backgroundImage": [
+        "backgroundImage1.jpg",
+        "backgroundImage2.jpg",
+        "backgroundImage3.jpg",
+        "backgroundImage4.jpg",
+        "backgroundImage5.jpg"
+      ],
+      "backgroundColor": [
+        "#422384",
+        "#2E2B34",
+        "#030303",
+        "#14561A",
+        "#BC6297"
+      ]
+    }
+  }
