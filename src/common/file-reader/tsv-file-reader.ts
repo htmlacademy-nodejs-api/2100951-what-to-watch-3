@@ -13,7 +13,6 @@ export default class TSVFileReader extends EventEmitter implements FileReaderInt
       encoding: 'utf-8',
     });
 
-
     let lineRead = '';
     let endLinePosition = -1;
     let importedRowCount = 0;
@@ -26,7 +25,9 @@ export default class TSVFileReader extends EventEmitter implements FileReaderInt
         lineRead = lineRead.slice(++endLinePosition);
         importedRowCount++;
 
-        this.emit('line', completeRow);
+        await new Promise((resolve) => {
+          this.emit('line', completeRow, resolve);
+        });
       }
     }
 

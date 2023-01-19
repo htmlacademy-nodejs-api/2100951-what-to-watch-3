@@ -1,30 +1,77 @@
 import TSVFileReader from '../common/file-reader/tsv-file-reader.js';
-import {CliCommandInterface} from './cli-command.interface.js';
-import chalk from 'chalk';
-import {createFilm, getErrorMessage} from '../utils/common.js';
+import { CliCommandInterface } from './cli-command.interface.js';
+import { createFilm, getErrorMessage } from '../utils/common.js';
+import { DatabaseInterface } from '../common/database-client/database.interface.js';
+import DatabaseService from '../common/database-client/database.service.js';
+import ConsoleLoggerService from '../common/logger/console-logger.services.js';
+import { LoggerInterface } from '../common/logger/logger.interface.js';
+import { UserModel } from '../modules/user/user.entity.js';
+import { getURI } from '../utils/db.js';
+import { UserServiceInterface } from '../modules/user/user-service.interface.js';
+import UserService from '../modules/user/user.services.js';
+import { FilmType } from '../types/films.type.js';
+import FilmService from '../modules/films/film.service.js';
+import { FilmServiceInterface } from '../modules/films/film-service.interface.js';
+import { FilmModel } from '../modules/films/film.entity.js';
+
+const DEFAULT_DB_PORT = 27017;
+const DEFAULT_USER_PASSWORD = '123456';
 
 export default class ImportCommand implements CliCommandInterface {
   public readonly name = '--import';
-  public readonly filmDataColor = chalk.hex('#7ed6a3');
-  public readonly errorColor = chalk.hex('#560319');
+  private userService!: UserServiceInterface;
+  private filmService!: FilmServiceInterface;
+  private databaseService!: DatabaseInterface;
+  private logger: LoggerInterface;
+  private salt!: string;
 
-  private onLine(line: string) {
+  constructor() {
+    this.onLine = this.onLine.bind(this);
+    this.onComplete = this.onComplete.bind(this);
+
+    this.logger = new ConsoleLoggerService();
+    this.filmService = new FilmService(this.logger, FilmModel);
+    this.userService = new UserService(this.logger, UserModel);
+    this.databaseService = new DatabaseService(this.logger);
+  }
+
+  private async saveFilm(film: FilmType) {
+    const user = await this.userService.findOrCreate({
+      ...film.user,
+      password: DEFAULT_USER_PASSWORD
+    }, this.salt);
+
+    await this.filmService.create({
+      ...film,
+      userId: user.id
+    });
+  }
+
+  private async onLine(line: string, resolve: () => void) {
     const film = createFilm(line);
-    console.log(this.filmDataColor(film));
+    await this.saveFilm(film);
+    resolve();
   }
 
   private onComplete(count: number) {
     console.log(`${count} rows imported.`);
+    this.databaseService.disconnect();
   }
 
-  public async execute(filename: string): Promise<void> {
+  public async execute(filename: string, login: string, password: string, host: string, dbname: string, salt: string): Promise<void> {
+    const uri = getURI(login, password, host, DEFAULT_DB_PORT, dbname);
+    this.salt = salt;
+
+    await this.databaseService.connect(uri);
+
     const fileReader = new TSVFileReader(filename.trim());
+
     fileReader.on('line', this.onLine);
     fileReader.on('end', this.onComplete);
 
     try {
       await fileReader.read();
-    } catch(err) {
+    } catch (err) {
       console.log(`Can't read the file: ${getErrorMessage(err)}`);
     }
   }

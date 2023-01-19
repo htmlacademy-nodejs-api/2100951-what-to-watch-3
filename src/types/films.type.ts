@@ -1,4 +1,4 @@
-import { GenresType } from './genres.type';
+import { GenresType } from './genres-type.enum';
 import { UserType } from './user.type';
 
 export type FilmType = {
@@ -13,7 +13,7 @@ export type FilmType = {
   starring: string[];
   director: string;
   runTime: number;
-  commentsAmount: number;
+  comments: number;
   user: UserType;
   posterImage: string;
   backgroundImage: string;

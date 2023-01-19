@@ -1,9 +1,9 @@
 import dayjs from 'dayjs';
-import { GenresType } from '../../../types/genres.type.js';
-import { MockData } from '../../../types/mock-data.type.js';
-import { UserType } from '../../../types/user.type.js';
-import { getRandomItem, generateRandomValue, getRandomItems } from '../../../utils/random.js';
-import { FilmGeneratorInterface } from './filn-generator.interface.js';
+import { GenresType } from '../../types/genres-type.enum.js';
+import { MockData } from '../../types/mock-data.type.js';
+import { UserType } from '../../types/user.type.js';
+import { getRandomItem, generateRandomValue, getRandomItems } from '../../utils/random.js';
+import { FilmGeneratorInterface } from './film-generator.interface.js';
 
 const FIRST_WEEK_DAY = 1;
 const LAST_WEEK_DAY = 7;
@@ -35,7 +35,7 @@ export default class FilmGenerator implements FilmGeneratorInterface {
       generateRandomValue(MIN_RUN_TIME, MAX_RUN_TIME),
       generateRandomValue(MIN_COMMENTS_AMOUNT, MAX_COMMENTS_AMOUNT),
       getRandomItem<UserType>(this.mockData.users).name,
-      getRandomItem<UserType>(this.mockData.users).mail,
+      getRandomItem<UserType>(this.mockData.users).email,
       getRandomItem<UserType>(this.mockData.users).avatar,
       getRandomItem<string>(this.mockData.posterImage),
       getRandomItem<string>(this.mockData.backgroundImage),

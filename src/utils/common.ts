@@ -1,5 +1,6 @@
+import crypto from 'crypto';
 import { FilmType } from '../types/films.type.js';
-import { GenresType } from '../types/genres.type.js';
+import { GenresType } from '../types/genres-type.enum.js';
 
 export const createFilm = (row: string) => {
   const tokens = row.replace('\n', '').split('\t');
@@ -36,8 +37,8 @@ export const createFilm = (row: string) => {
     starring: starring.split(', ').map((actor) => (actor)),
     director,
     runTime: Number(runTime),
-    commentsAmount: Number(commentsAmount),
-    user: { name: userName, mail: userMail, avatar: userAvatar },
+    comments: Number(commentsAmount),
+    user: { name: userName, email: userMail, avatar: userAvatar },
     posterImage,
     backgroundImage,
     backgroundColor
@@ -45,3 +46,8 @@ export const createFilm = (row: string) => {
 };
 
 export const getErrorMessage = (error: unknown): string => error instanceof Error ? error.message : '';
+
+export const createSHA256 = (line: string, salt: string): string => {
+  const shaHasher = crypto.createHmac('sha256', salt);
+  return shaHasher.update(line).digest('hex');
+};
