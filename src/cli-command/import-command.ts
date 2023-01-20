@@ -1,18 +1,19 @@
 import TSVFileReader from '../common/file-reader/tsv-file-reader.js';
 import { CliCommandInterface } from './cli-command.interface.js';
 import { createFilm, getErrorMessage } from '../utils/common.js';
-import { DatabaseInterface } from '../common/database-client/database.interface.js';
-import DatabaseService from '../common/database-client/database.service.js';
 import ConsoleLoggerService from '../common/logger/console-logger.services.js';
 import { LoggerInterface } from '../common/logger/logger.interface.js';
 import { UserModel } from '../modules/user/user.entity.js';
-import { getURI } from '../utils/db.js';
 import { UserServiceInterface } from '../modules/user/user-service.interface.js';
 import UserService from '../modules/user/user.services.js';
 import { FilmType } from '../types/films.type.js';
-import FilmService from '../modules/films/film.service.js';
+import { DatabaseInterface } from '../common/database-client/database.interface.js';
+import DatabaseService from '../common/database-client/database.service.js';
 import { FilmServiceInterface } from '../modules/films/film-service.interface.js';
 import { FilmModel } from '../modules/films/film.entity.js';
+import FilmService from '../modules/films/film.service.js';
+import { getURI } from '../utils/db.js';
+
 
 const DEFAULT_DB_PORT = 27017;
 const DEFAULT_USER_PASSWORD = '123456';
