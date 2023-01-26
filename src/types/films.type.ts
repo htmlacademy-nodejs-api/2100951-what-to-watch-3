@@ -2,7 +2,7 @@ import { GenresType } from './genres-type.enum';
 import { UserType } from './user.type';
 
 export type FilmType = {
-  name: string;
+  title: string;
   description: string;
   postDate: Date;
   genre: GenresType;
