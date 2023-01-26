@@ -1,0 +1,614 @@
+openapi: 3.0.0
+info:
+  title: API сервер для демо-проекта «Что посмотреть».
+  description: |-
+    * Список ресурсов и маршрутов сервера «Что посмотреть».
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  version: 2.0.0
+tags:
+  - name: films
+    description: Действия с фильмами.
+  - name: genres
+    description: Действия с жанрами.
+  - name: comments
+    description: Действия с комментариями.
+  - name: users
+    description: Действия с пользователем.
+
+paths:
+  /users/register:
+    post:
+      tags:
+        - users
+      summary: Регистрация пользователя
+      description: Регистрирует нового пользователя.
+
+      requestBody:
+        description: Информация для создания нового пользователя.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/createUser'
+        required: true
+
+      responses:
+        "201":
+          description: Пользователь зарегистрирован. Объект пользователя.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/user'
+
+        "409":
+          description: Пользователь с таким email уже существует.
+
+  /users/login:
+    post:
+      tags:
+        - users
+      summary: Авторизация пользователя
+      description: Авторизует пользователя на основе логина и пароля
+      requestBody:
+        description: Информация для входа в приложение
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/userEnterApp'
+      responses:
+        '201':
+          description: Вход произведён
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/token'
+
+        '409':
+          description: Вход не произведён.
+
+  /users/logout:
+    post:
+      tags:
+        - users
+      summary: Выход из приложения
+      description: Производит выход из приложения
+      requestBody:
+        description: Информация для выхода из приложения
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/token'
+
+      responses:
+        '201':
+          description: Выход произведён
+        '409':
+          description: Выход не произвёден
+
+    get:
+      tags:
+        - users
+      summary: Проверка состояния пользователя
+      description: Возвращает информацию по авторизованному пользователю
+      requestBody:
+        description: Информация для проверки состояния пользователя
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/token'
+      responses:
+        '201':
+          description: Информация о пользователе
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/userLogin'
+
+  /films/addFilm:
+    post:
+      tags:
+        - films
+      summary: Добавление нового фильма
+      description: Добавляет новый фильм на основе валидации переданных данных
+      requestBody:
+        description: Информация для добавления нового фильма
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/createFilm'
+
+      responses:
+        '201':
+          description: Фильм создан. Объект фильма.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/film'
+        '409':
+          description: Фильм не создан. Данные невалидны.
+
+  /films/updateFilm:
+    put:
+      tags:
+        - films
+      summary: Обновление фильма
+      description: Обновляет фильм на основе валидации переданных данных
+      requestBody:
+        description: Информация для обновления фильма
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/createFilm'
+
+      responses:
+        '201':
+          description: Фильм обновлён. Объект фильма.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/film'
+        '410':
+          description: Фильм не создан. Данные невалидны.
+
+  /films/deleteFilm:
+    delete:
+      tags:
+        - films
+      summary: Удаление карточки фильма
+      description: Удаляет фильм
+      responses:
+        '411':
+          description: Попытка удалить чужой фильм
+
+  /films/getFilmsList:
+    get:
+      tags:
+        - films
+      summary: Получение списка фильмов
+      description: Получает список фильмов, отсортированный по дате поубликации (по убыванию)
+      responses:
+        '201':
+          description: Получен список фильмов
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/filmInList'
+
+  /films/filmsListToGenre:
+    get:
+      tags:
+        - films
+      summary: Получение списка фильмов определённого жанра
+      description: Получает список фильмов определённого жанра, отсортированный по дате поубликации (по убыванию)
+      responses:
+        '201':
+          description: Получен список фильмов
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/filmInList'
+
+  /films/filmDetails:
+    get:
+      tags:
+        - films
+      summary: Получение детальной информации о фильме
+      description: Получает детальную информацию о фильме
+      responses:
+        '201':
+          description: Получена детальная информация о фильме
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/filmWithCommentsCount'
+
+  /films/promo:
+    get:
+      tags:
+        - films
+      summary: Получение промо-фильма
+      description: Получает промо фильм
+      responses:
+        '201':
+          description: Получен промо фильм
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/createFilm'
+
+  /films/favorites:
+    get:
+      tags:
+        - films
+      summary: Получение списка фильмов к просмотру
+      description: Получает список фильмов добавленных к просмотру.
+      responses:
+        '201':
+          description: Получен список фильмов к просмотру
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/filmInList'
+
+    post:
+      tags:
+        - films
+      summary: Добавить фильм в список к просмотру
+      description: Добавляет фильм в список к просмотру
+      requestBody:
+        description: Информация для добавления фильма в список к просмотру
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/film'
+      responses:
+        '201':
+          description: Фильм добавлен
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/filmInList'
+
+    delete:
+      tags:
+        - films
+      summary: Удалить фильм из списка к просмотру
+      description: Удаляет филь из списка к просмотру
+      requestBody:
+        description: Информация для удаления фильма из списка к просмотру
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/film'
+      responses:
+        '201':
+          description: Фильм удалён
+
+  /comments/{filmId}/comment:
+    get:
+      tags:
+        - comments
+      summary: Получить список комментариев
+      description: Получает список комментариев для определённого фильма
+      responses:
+        '201':
+          description: Комментарии получены
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/comments'
+
+    post:
+      tags:
+        - comments
+      summary: Добавить новый комментарий
+      description: Добавляет новый комментарий к определённому фильму на основе валидации переданных данных
+      requestBody:
+        description: Информация для добавления комментария
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/comments'
+      responses:
+        '201':
+          description: Комментарий добавлен. Рейтинг обновлён.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/comment'
+
+        '409':
+          description: Комментарий не добавлен. Данные невалидны.
+
+
+
+components:
+  schemas:
+    token:
+      type: string
+      example: fdjghkjjkb4353jnf3
+
+    comments:
+      type: object
+
+      properties:
+        text:
+          type: string
+          example: Текст комментария
+
+        rating:
+          type: integer
+          example: 4
+
+        author:
+          type: object
+          example:
+            properties:
+              id:
+                type: string
+                example: 6329c3d6a04ab1061c6425ea
+
+              email:
+                type: string
+                example: keks@htmlacademy.ru
+
+
+    filmWithCommentsCount:
+      type: object
+
+      properties:
+        title:
+          type: string
+          example: Железный Человек
+
+        description:
+          type: string
+          example: Фильм о лучшем супергерое всех времён
+
+        postDate:
+          type: string
+          example: '17.01.2023'
+
+        genre:
+          type: string
+          example: action
+
+        releaseDate:
+          type: string
+          example: '2007'
+
+        previewVideo:
+          type: string
+          example: video.mp4
+
+        video:
+          type: string
+          example: video.mp4
+
+        actors:
+          type: string
+          example: Роберт Дауни-младший, Гвинет Пелтроу
+
+        director:
+          type: string
+          example: Джон Фавро
+
+        commentsCount:
+          type: string
+          example: '10'
+
+        runTime:
+          type: string
+          example: '125'
+
+        user:
+          type: object
+          example:
+            properties:
+              id:
+                type: string
+                example: 6329c3d6a04ab1061c6425ea
+
+              email:
+                type: string
+                example: keks@htmlacademy.ru
+
+        poster:
+          type: string
+          example: iron-man.jpg
+
+        backgroundImg:
+          type: string
+          example: backgroundImg.jpg
+
+        backgroundColor:
+          type: string
+          example: red
+
+    filmInList:
+      type: object
+
+      properties:
+        title:
+          type: string
+          example: Железный Человек
+
+        postDate:
+          type: string
+          example: '17.01.2023'
+
+        genre:
+          type: string
+          example: action
+
+        previewVideo:
+          type: string
+          example: video.mp4
+
+        user:
+          type: object
+          example:
+            properties:
+              id:
+                type: string
+                example: 6329c3d6a04ab1061c6425ea
+
+              email:
+                type: string
+                example: keks@htmlacademy.ru
+
+        poster:
+          type: string
+          example: poster.jpg
+
+        commentsCount:
+          type: string
+          example: '10'
+
+    createFilm:
+      type: object
+
+      properties:
+        title:
+          type: string
+          example: Железный Человек
+
+        description:
+          type: string
+          example: Фильм о лучшем супергерое всех времён
+
+        postDate:
+          type: string
+          example: '17.01.2023'
+
+        genre:
+          type: string
+          example: action
+
+        releaseDate:
+          type: string
+          example: '2007'
+
+        previewVideo:
+          type: string
+          example: video.mp4
+
+        video:
+          type: string
+          example: video.mp4
+
+        actors:
+          type: string
+          example: Роберт Дауни-младший, Гвинет Пелтроу
+
+        director:
+          type: string
+          example: Джон Фавро
+
+        runTime:
+          type: string
+          example: '125'
+
+        user:
+          type: object
+          example:
+            properties:
+              id:
+                type: string
+                example: 6329c3d6a04ab1061c6425ea
+
+              email:
+                type: string
+                example: keks@htmlacademy.ru
+
+        poster:
+          type: string
+          example: iron-man.jpg
+
+        backgroundImg:
+          type: string
+          example: backgroundImg.jpg
+
+        backgroundColor:
+          type: string
+          example: red
+
+
+    createUser:
+      type: object
+
+      properties:
+        email:
+          type: string
+          example: keks@htmlacademy.ru
+
+        name:
+          type: string
+          example: Keks
+
+        password:
+          type: string
+          example: 123456
+
+        avatar:
+          type: string
+          example: avatar.jpg
+
+    userEnterApp:
+      type: object
+
+      properties:
+        email:
+          type: string
+          example: keks@htmlacademy.ru
+
+        password:
+          type: string
+          example: 123456
+
+    userLogin:
+      type: object
+
+      properties:
+        email:
+          type: string
+          example: keks@htmlacademy.ru
+
+        name:
+          type: string
+          example: Keks
+
+        avatar:
+          type: string
+          example: avatar.jpg
+
+    user:
+      type: object
+
+      properties:
+        id:
+          type: string
+          example: 6329c3d6a04ab1061c6425ea
+
+        email:
+          type: string
+          example: keks@htmlacademy.ru
+
+    film:
+      type: object
+
+      properties:
+        id:
+          type: string
+          example: kd346fghavln4uht
+
+        title:
+          type: string
+          example: Железный человек
+
+    comment:
+      type: object
+
+      properties:
+        id:
+          type: string
+          example: 334ivmdjfbn
+
+        text:
+          type: string
+          example: Текст комментария
+
+        rating:
+          type: integer
+          example: 4
