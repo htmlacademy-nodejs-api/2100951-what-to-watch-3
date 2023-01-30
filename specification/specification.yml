@@ -1,6 +1,6 @@
-openapi: 3.0.0
+openapi: 3.1.0
 info:
-  title: API сервер для демо-проекта «Что посмотреть».
+  title: API сервер для проекта «Что посмотреть».
   description: |-
     * Список ресурсов и маршрутов сервера «Что посмотреть».
   license:
@@ -10,14 +10,319 @@ info:
 tags:
   - name: films
     description: Действия с фильмами.
-  - name: genres
-    description: Действия с жанрами.
   - name: comments
     description: Действия с комментариями.
   - name: users
     description: Действия с пользователем.
-
 paths:
+  /films:
+    post:
+      tags:
+        - films
+      summary: Добавление фильма
+      description: Добавляет новый фильм
+
+      requestBody:
+        description: Информация для создания нового фильма
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/createOrUpdateFilm"
+        required: true
+
+      responses:
+        "201":
+          description: Фильм создан. Объект фильма.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/film"
+
+        "400":
+          description: Данные не валидны.
+
+        "401":
+          description: Пользователь не авторизован.
+
+    get:
+      tags:
+        - films
+      summary: Получение списка фильмов
+      description: Получает список фильмов
+
+      parameters:
+        - name: limit
+          in: query
+          description: Максимальное количество возвращаемых фильмов
+          schema:
+            type: number
+            example: 60
+
+      responses:
+        "200":
+          description: Возвращает массив фильмов. 
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/films"
+
+  /films/{genre}:
+    get:
+      tags:
+        - films
+      summary: Получение списка фильмов определённого жанра
+      description: Получает список фильмов определённого жанра
+
+      parameters:
+        - name: genre
+          in: path
+          description: Определённый жанр фильмов
+          required: true
+          schema:
+            type: string
+            example: Drama
+
+        - name: limit
+          in: query
+          description: Максимальное количество возвращаемых фильмов
+          schema:
+            type: number
+            example: 100
+
+      responses:
+        "200":
+          description: Возвращает массив фильмов определённого жанра. 
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/films"
+
+        "404":
+          description: Такой жанр не существует
+
+
+  /films/{filmId}:
+    put:
+      tags:
+        - films
+      summary: Редактирование фильма
+      description: Редактирует карточку фильма
+
+      parameters:
+        - name: filmId
+          in: path
+          description: Уникальный идентификатор фильма
+          required: true
+          schema:
+            type: number
+            example: 1
+
+
+      requestBody:
+        description: Информация для редактирования фильма
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/createOrUpdateFilm"
+        required: true
+
+      responses:
+        "201":
+          description: Фильм изменён. Объект фильма.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/film"
+
+        "400":
+          description: Данные не валидны.
+
+        "401":
+          description: Пользователь не авторизован.
+
+        "403":
+          description: Недостаточно прав для редактирования фильма.
+
+        "404":
+          description: Такой фильм не существует
+
+    delete:
+      tags:
+        - films
+      summary: Удаление фильма
+      description: Удаляет карточку фильма
+
+      responses:
+        "204":
+          description: Фильм удалён.
+
+        "401":
+          description: Пользователь не авторизован.
+
+        "403":
+          description: Недостаточно прав для удаления фильма.
+
+        "404":
+          description: Такой фильм не существует
+
+    get:
+      tags:
+        - films
+      summary: Получение детальной информации по фильму
+      description: Получает детальную информацию по фильму
+
+      responses:
+        "200":
+          description: Возвращает детальную информацию по фильму. 
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/film"
+
+        "404":
+          description: Такой фильм не существует
+
+
+  /films/promo:
+    get:
+      tags:
+        - films
+      summary: Получение промо-фильма
+      description: Получает промо-фильм
+
+      responses:
+        "200":
+          description: Возвращает объект промо-фильма. 
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/film"
+
+  /films/favorite:
+    get:
+      tags:
+        - films
+      summary: Получение списка фильмов "К просмотру"
+      description: Получает список фильмов "К просмотру"
+
+      responses:
+        "200":
+          description: Возвращает массив фильмов, добавленных в список "К просмотру" 
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/films"
+
+        "401":
+          description: Пользователь не авторизован. 
+
+  /films/favorite/{filmId}/{status}:
+    post:
+      tags:
+        - films
+      summary: Добавление/удаление фильма из списка "К просмотру"
+      description: Добавляет/удаляет фильма из списка "К просмотру"
+
+      parameters:
+        - name: filmId
+          in: path
+          description: Уникальный идентификатор фильма
+          required: true
+          schema:
+            type: number
+            example: 1
+
+        - name: status
+          in: path
+          description: Статус фильма. Может быть 1 или 0, где 1 добавляет фильма в список «к просмотру», а 0 удаляет
+          required: true
+          schema:
+            type: number
+            example: 1
+
+      responses:
+        "200":
+          description: Объект фильма
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/film"
+
+        "401":
+          description: Пользователь не авторизован. 
+
+        "404":
+          description: Такой фильм не существует
+
+
+  /comments/{filmId}:
+    get:
+      tags:
+        - comments
+      summary: Получение списка комментариев для определенного фильма
+      description: Получает список комментариев для определенного фильма
+
+      parameters:
+        - name: filmId
+          in: path
+          description: Уникальный идентификатор фильма
+          required: true
+          schema:
+            type: number
+            example: 1
+
+      responses:
+        "200":
+          description: Массив комментариев
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/comments"
+
+        "404":
+          description: Такой фильм не существует.
+
+    post: 
+      tags:
+        - comments
+      summary: Добавление нового комментария к определённому фильму
+      description: Добавляет новый комментарий к определённому фильму
+
+      parameters:
+        - name: filmId
+          in: path
+          description: Уникальный идентификатор фильма
+          required: true
+          schema:
+            type: number
+            example: 1
+
+      requestBody:
+        description: Информация для создания нового комментария
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/createComment"
+        required: true
+
+      responses:
+        "201":
+          description: Комментарий создан. Объект комментария.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/comment"
+
+        "400":
+          description: Данные не валидны.
+
+        "401":
+          description: Пользователь не авторизован.
+
+        "404":
+          description: Такой фильм не существует
+
+
   /users/register:
     post:
       tags:
@@ -30,7 +335,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/createUser'
+              $ref: "#/components/schemas/createUser"
         required: true
 
       responses:
@@ -39,7 +344,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/user'
+                $ref: "#/components/schemas/user"
+
+        "400":
+          description: Логин или пароль не валидны.
 
         "409":
           description: Пользователь с таким email уже существует.
@@ -50,479 +358,293 @@ paths:
         - users
       summary: Авторизация пользователя
       description: Авторизует пользователя на основе логина и пароля
+
       requestBody:
-        description: Информация для входа в приложение
+        description: Информация для авторизации.
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/userEnterApp'
+              $ref: "#/components/schemas/loginUser"
+        required: true
+
       responses:
-        '201':
-          description: Вход произведён
+        "200":
+          description: Пользователь авторизован.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/token'
+                $ref: "#/components/schemas/userWithToken"
 
-        '409':
-          description: Вход не произведён.
+        "400":
+          description: Логин или пароль неверный.
 
-  /users/logout:
-    post:
-      tags:
-        - users
-      summary: Выход из приложения
-      description: Производит выход из приложения
-      requestBody:
-        description: Информация для выхода из приложения
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/token'
-
-      responses:
-        '201':
-          description: Выход произведён
-        '409':
-          description: Выход не произвёден
+        "404":
+          description: Пользователь с таким логином не существует
 
     get:
       tags:
         - users
       summary: Проверка состояния пользователя
       description: Возвращает информацию по авторизованному пользователю
-      requestBody:
-        description: Информация для проверки состояния пользователя
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/token'
+
       responses:
-        '201':
-          description: Информация о пользователе
+        "200":
+          description: Пользователь авторизован. Объект пользователя.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/userLogin'
+                $ref: "#/components/schemas/userWithToken"
 
-  /films/addFilm:
+        "401":
+          description: Пользователь не авторизован.
+
+  /users/{userId}/avatar:
     post:
       tags:
-        - films
-      summary: Добавление нового фильма
-      description: Добавляет новый фильм на основе валидации переданных данных
-      requestBody:
-        description: Информация для добавления нового фильма
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/createFilm'
+        - users
+      summary: Загрузить изображение аватара
+      description: Загружает изображение аватара пользователя. Изображение
+        аватара должно быть в формате `png` или `jpg`.
+
+      parameters:
+        - name: userId
+          in: path
+          description: Уникальный идентификатор пользователя
+          required: true
+          schema:
+            type: number
+            example: 1
 
       responses:
-        '201':
-          description: Фильм создан. Объект фильма.
+        "201":
+          description: Пользователь изменен. Объект пользователя.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/film'
-        '409':
-          description: Фильм не создан. Данные невалидны.
+                $ref: "#/components/schemas/userWithToken"
 
-  /films/updateFilm:
-    put:
-      tags:
-        - films
-      summary: Обновление фильма
-      description: Обновляет фильм на основе валидации переданных данных
-      requestBody:
-        description: Информация для обновления фильма
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/createFilm'
+        "400":
+          description: Некорректный формат изображения
 
-      responses:
-        '201':
-          description: Фильм обновлён. Объект фильма.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/film'
-        '410':
-          description: Фильм не создан. Данные невалидны.
-
-  /films/deleteFilm:
-    delete:
-      tags:
-        - films
-      summary: Удаление карточки фильма
-      description: Удаляет фильм
-      responses:
-        '411':
-          description: Попытка удалить чужой фильм
-
-  /films/getFilmsList:
-    get:
-      tags:
-        - films
-      summary: Получение списка фильмов
-      description: Получает список фильмов, отсортированный по дате поубликации (по убыванию)
-      responses:
-        '201':
-          description: Получен список фильмов
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/filmInList'
-
-  /films/filmsListToGenre:
-    get:
-      tags:
-        - films
-      summary: Получение списка фильмов определённого жанра
-      description: Получает список фильмов определённого жанра, отсортированный по дате поубликации (по убыванию)
-      responses:
-        '201':
-          description: Получен список фильмов
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/filmInList'
-
-  /films/filmDetails:
-    get:
-      tags:
-        - films
-      summary: Получение детальной информации о фильме
-      description: Получает детальную информацию о фильме
-      responses:
-        '201':
-          description: Получена детальная информация о фильме
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/filmWithCommentsCount'
-
-  /films/promo:
-    get:
-      tags:
-        - films
-      summary: Получение промо-фильма
-      description: Получает промо фильм
-      responses:
-        '201':
-          description: Получен промо фильм
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/createFilm'
-
-  /films/favorites:
-    get:
-      tags:
-        - films
-      summary: Получение списка фильмов к просмотру
-      description: Получает список фильмов добавленных к просмотру.
-      responses:
-        '201':
-          description: Получен список фильмов к просмотру
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/filmInList'
-
-    post:
-      tags:
-        - films
-      summary: Добавить фильм в список к просмотру
-      description: Добавляет фильм в список к просмотру
-      requestBody:
-        description: Информация для добавления фильма в список к просмотру
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/film'
-      responses:
-        '201':
-          description: Фильм добавлен
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/filmInList'
-
-    delete:
-      tags:
-        - films
-      summary: Удалить фильм из списка к просмотру
-      description: Удаляет филь из списка к просмотру
-      requestBody:
-        description: Информация для удаления фильма из списка к просмотру
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/film'
-      responses:
-        '201':
-          description: Фильм удалён
-
-  /comments/{filmId}/comment:
-    get:
-      tags:
-        - comments
-      summary: Получить список комментариев
-      description: Получает список комментариев для определённого фильма
-      responses:
-        '201':
-          description: Комментарии получены
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/comments'
-
-    post:
-      tags:
-        - comments
-      summary: Добавить новый комментарий
-      description: Добавляет новый комментарий к определённому фильму на основе валидации переданных данных
-      requestBody:
-        description: Информация для добавления комментария
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/comments'
-      responses:
-        '201':
-          description: Комментарий добавлен. Рейтинг обновлён.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/comment'
-
-        '409':
-          description: Комментарий не добавлен. Данные невалидны.
-
+        "404":
+          description: Пользователь с таким логином не существует.
 
 
 components:
   schemas:
-    token:
-      type: string
-      example: fdjghkjjkb4353jnf3
-
-    comments:
+    createOrUpdateFilm:
       type: object
 
       properties:
-        text:
+        name:
           type: string
-          example: Текст комментария
+          example: Matrix
+
+        description:
+          type: string
+          example: A computer hacker learns from mysterious rebels about the true nature of his reality and his role in the war against its controllers.
+
+        genre:
+          type: string
+          example: Drama
+
+        released:
+          type: number
+          example: 2010
+
+        previewVideoLink:
+          type: string
+          example: https://11.react.pages.academy/static/film/video/traffic.mp4
+
+        videoLink:
+          type: string
+          example: https://11.react.pages.academy/static/film/video/bubbles.mp4
+
+        starring:
+          type: array
+          items:
+            type: string
+            example: Bruce Willis
+
+        director:
+          type: string
+          example: Quentin Tarantino
+
+        runTime:
+          type: number
+          example: 130
+
+        posterImage:
+          type: string
+          example: https://11.react.pages.academy/static/film/poster/matrix.jpg
+
+        backgroundImage:
+          type: string
+          example: https://11.react.pages.academy/static/film/background/matrix.jpg
+
+        backgroundColor:
+          type: string
+          example: '#B9B27E'    
+
+    film:
+      type: object
+
+      properties:
+        name:
+          type: string
+          example: Matrix
+
+        description:
+          type: string
+          example: A computer hacker learns from mysterious rebels about the true nature of his reality and his role in the war against its controllers.
+
+        postDate:
+          type: string
+          format: date-time
+          example: 2022-12-22T08:45:40.283Z
+
+        genre:
+          type: string
+          example: Drama
+
+        released:
+          type: number
+          example: 2010
 
         rating:
-          type: integer
-          example: 4
+          type: number
+          example: 0
 
-        author:
-          type: object
-          example:
-            properties:
-              id:
-                type: string
-                example: 6329c3d6a04ab1061c6425ea
-
-              email:
-                type: string
-                example: keks@htmlacademy.ru
-
-
-    filmWithCommentsCount:
-      type: object
-
-      properties:
-        title:
+        previewVideoLink:
           type: string
-          example: Железный Человек
+          example: https://11.react.pages.academy/static/film/video/traffic.mp4
 
-        description:
+        videoLink:
           type: string
-          example: Фильм о лучшем супергерое всех времён
+          example: https://11.react.pages.academy/static/film/video/bubbles.mp4
 
-        postDate:
-          type: string
-          example: '17.01.2023'
-
-        genre:
-          type: string
-          example: action
-
-        releaseDate:
-          type: string
-          example: '2007'
-
-        previewVideo:
-          type: string
-          example: video.mp4
-
-        video:
-          type: string
-          example: video.mp4
-
-        actors:
-          type: string
-          example: Роберт Дауни-младший, Гвинет Пелтроу
+        starring:
+          type: array
+          items:
+            type: string
+            example: Bruce Willis
 
         director:
           type: string
-          example: Джон Фавро
-
-        commentsCount:
-          type: string
-          example: '10'
+          example: Quentin Tarantino
 
         runTime:
+          type: number
+          example: 130
+
+        commentsAmount:
+          type: number
+          example: 110
+
+        userId:
           type: string
-          example: '125'
+          example: 6317c3d6a54ab1061c6434ea
 
-        user:
-          type: object
-          example:
-            properties:
-              id:
-                type: string
-                example: 6329c3d6a04ab1061c6425ea
-
-              email:
-                type: string
-                example: keks@htmlacademy.ru
-
-        poster:
+        posterImage:
           type: string
-          example: iron-man.jpg
+          example: https://11.react.pages.academy/static/film/poster/matrix.jpg
 
-        backgroundImg:
+        backgroundImage:
           type: string
-          example: backgroundImg.jpg
+          example: https://11.react.pages.academy/static/film/background/matrix.jpg
 
         backgroundColor:
           type: string
-          example: red
+          example: '#B9B27E' 
 
-    filmInList:
+
+    films:
+      type: array
+      items: 
+        type: object
+        properties:
+          name:
+            type: string
+            example: Matrix
+
+          postDate:
+            type: string
+            format: date-time
+            example: 2022-12-22T08:45:40.283Z
+
+          genre:
+            type: string
+            example: Drama
+
+          previewVideoLink:
+            type: string
+            example: https://11.react.pages.academy/static/film/video/traffic.mp4
+
+          userId:
+            type: string
+            example: 6317c3d6a54ab1061c6434ea
+
+          posterImage:
+            type: string
+            example: https://11.react.pages.academy/static/film/poster/matrix.jpg
+
+          commentsAmount:
+            type: number
+            example: 110
+
+    comments:
+      type: array
+      items:
+        type: object
+        properties:
+          message:
+            type: string
+            example: Discerning travellers and Wes Anderson fans will luxuriate in the glorious Mittel-European kitsch of one of the director's funniest and most exquisitely designed movies in years.
+
+          rating:
+            type: number
+            example: 7.8
+
+          postDate:
+            type: string
+            format: date-time
+            example: 2022-12-22T08:45:40.283Z
+
+          userId:
+            type: string
+            example: 6317c3d6a54ab1061c6434ea  
+
+    createComment:
       type: object
 
       properties:
-        title:
-          type: string
-          example: Железный Человек
+          message:
+            type: string
+            example: Discerning travellers and Wes Anderson fans will luxuriate in the glorious Mittel-European kitsch of one of the director's funniest and most exquisitely designed movies in years.
 
-        postDate:
-          type: string
-          example: '17.01.2023'
+          rating:
+            type: number
+            example: 7.8    
 
-        genre:
-          type: string
-          example: action
-
-        previewVideo:
-          type: string
-          example: video.mp4
-
-        user:
-          type: object
-          example:
-            properties:
-              id:
-                type: string
-                example: 6329c3d6a04ab1061c6425ea
-
-              email:
-                type: string
-                example: keks@htmlacademy.ru
-
-        poster:
-          type: string
-          example: poster.jpg
-
-        commentsCount:
-          type: string
-          example: '10'
-
-    createFilm:
+    comment:
       type: object
-
       properties:
-        title:
+        message:
           type: string
-          example: Железный Человек
+          example: Discerning travellers and Wes Anderson fans will luxuriate in the glorious Mittel-European kitsch of one of the director's funniest and most exquisitely designed movies in years.
 
-        description:
-          type: string
-          example: Фильм о лучшем супергерое всех времён
+        rating:
+          type: number
+          example: 7.8
 
         postDate:
           type: string
-          example: '17.01.2023'
+          format: date-time
+          example: 2022-12-22T08:45:40.283Z
 
-        genre:
+        userId:
           type: string
-          example: action
-
-        releaseDate:
-          type: string
-          example: '2007'
-
-        previewVideo:
-          type: string
-          example: video.mp4
-
-        video:
-          type: string
-          example: video.mp4
-
-        actors:
-          type: string
-          example: Роберт Дауни-младший, Гвинет Пелтроу
-
-        director:
-          type: string
-          example: Джон Фавро
-
-        runTime:
-          type: string
-          example: '125'
-
-        user:
-          type: object
-          example:
-            properties:
-              id:
-                type: string
-                example: 6329c3d6a04ab1061c6425ea
-
-              email:
-                type: string
-                example: keks@htmlacademy.ru
-
-        poster:
-          type: string
-          example: iron-man.jpg
-
-        backgroundImg:
-          type: string
-          example: backgroundImg.jpg
-
-        backgroundColor:
-          type: string
-          example: red
+          example: 6317c3d6a54ab1061c6434ea 
 
 
     createUser:
@@ -531,47 +653,27 @@ components:
       properties:
         email:
           type: string
-          example: keks@htmlacademy.ru
+          example: test@lost.local
 
-        name:
+        userName:
           type: string
-          example: Keks
+          example: Emilia
 
         password:
           type: string
           example: 123456
 
-        avatar:
-          type: string
-          example: avatar.jpg
-
-    userEnterApp:
+    loginUser:
       type: object
 
       properties:
-        email:
+        userName:
           type: string
-          example: keks@htmlacademy.ru
+          example: Emilia
 
         password:
           type: string
           example: 123456
-
-    userLogin:
-      type: object
-
-      properties:
-        email:
-          type: string
-          example: keks@htmlacademy.ru
-
-        name:
-          type: string
-          example: Keks
-
-        avatar:
-          type: string
-          example: avatar.jpg
 
     user:
       type: object
@@ -579,36 +681,41 @@ components:
       properties:
         id:
           type: string
-          example: 6329c3d6a04ab1061c6425ea
+          example: 6317c3d6a54ab1061c6434ea
+
+        userName:
+          type: string
+          example: Emilia
 
         email:
           type: string
-          example: keks@htmlacademy.ru
+          example: test@lost.local
 
-    film:
+        avatarUrl:
+          type: string
+          example: user.jpg
+
+
+    userWithToken:
       type: object
 
       properties:
         id:
           type: string
-          example: kd346fghavln4uht
+          example: 6317c3d6a54ab1061c6434ea
 
-        title:
+        userName:
           type: string
-          example: Железный человек
+          example: Emilia
 
-    comment:
-      type: object
-
-      properties:
-        id:
+        email:
           type: string
-          example: 334ivmdjfbn
+          example: test@lost.local
 
-        text:
+        avatarUrl:
           type: string
-          example: Текст комментария
+          example: user.jpg
 
-        rating:
-          type: integer
-          example: 4
+        token:
+          type: string
+          example: T2xpdmVyLmNvbm5lckBnbWFpbC5jb20=

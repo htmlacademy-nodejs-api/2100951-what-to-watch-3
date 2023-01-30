@@ -2,6 +2,7 @@ import { types, DocumentType, mongoose } from '@typegoose/typegoose';
 import { injectable, inject } from 'inversify';
 import { LoggerInterface } from '../../common/logger/logger.interface.js';
 import { Component } from '../../types/component.types.js';
+import { GenresType } from '../../types/genres-type.enum.js';
 import { SortType } from '../../types/sort-type.enum.js';
 import CreateFilmDto from './dto/create-film.dto.js';
 import UpdateFilmDto from './dto/update-film.dto.js';
@@ -36,11 +37,12 @@ export default class FilmService implements FilmServiceInterface {
       .exec();
   }
 
-  public async find(): Promise<DocumentType<FilmEntity>[]> {
+  public async find(count?: number): Promise<DocumentType<FilmEntity>[]> {
+    const limit = count ?? DEFAULT_FILM_COUNT;
+
     return this.filmModel
-      .find()
+      .find({}, {}, {limit})
       .sort({ createdAt: SortType.Down })
-      .limit(DEFAULT_FILM_COUNT)
       .populate(['userId', 'genres'])
       .exec();
   }
@@ -58,7 +60,7 @@ export default class FilmService implements FilmServiceInterface {
       .exec();
   }
 
-  public async findByGenreId(genreId: string, count?: number): Promise<DocumentType<FilmEntity>[]> {
+  public async findByGenreId(genreId: GenresType, count?: number): Promise<DocumentType<FilmEntity>[]> {
     const limit = count ?? DEFAULT_FILM_COUNT;
     return this.filmModel
       .find({ genres: genreId }, {}, { limit })

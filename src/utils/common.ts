@@ -1,3 +1,5 @@
+import {plainToInstance} from 'class-transformer';
+import {ClassConstructor} from 'class-transformer/types/interfaces/class-constructor.type.js';
 import crypto from 'crypto';
 import { FilmType } from '../types/films.type.js';
 import { GenresType } from '../types/genres-type.enum.js';
@@ -5,7 +7,7 @@ import { GenresType } from '../types/genres-type.enum.js';
 export const createFilm = (row: string) => {
   const tokens = row.replace('\n', '').split('\t');
   const [
-    name,
+    title,
     description,
     createdDate,
     genre,
@@ -26,7 +28,7 @@ export const createFilm = (row: string) => {
   ] = tokens;
 
   return {
-    name,
+    title,
     description,
     postDate: new Date(createdDate),
     genre: GenresType[genre as 'Comedy' | 'Crime' | 'Documentary' | 'Drama' | 'Horror' | 'Family' | 'Romance' | 'Scifi' | 'Thriller'],
@@ -51,3 +53,10 @@ export const createSHA256 = (line: string, salt: string): string => {
   const shaHasher = crypto.createHmac('sha256', salt);
   return shaHasher.update(line).digest('hex');
 };
+
+export const fillDTO = <T, V>(someDto: ClassConstructor<T>, plainObject: V) =>
+  plainToInstance(someDto, plainObject, {excludeExtraneousValues: true});
+
+export const createErrorObject = (message: string) => ({
+  error: message,
+});
