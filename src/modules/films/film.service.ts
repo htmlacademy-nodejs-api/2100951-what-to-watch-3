@@ -20,7 +20,7 @@ export default class FilmService implements FilmServiceInterface {
 
   public async create(dto: CreateFilmDto): Promise<DocumentType<FilmEntity>> {
     const result = await this.filmModel.create(dto);
-    this.logger.info(`New film created: ${dto.name}`);
+    this.logger.info(`New film created: ${dto.title}`);
 
     return result;
   }
