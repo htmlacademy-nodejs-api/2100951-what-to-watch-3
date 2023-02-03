@@ -77,9 +77,9 @@ export default class FilmService implements FilmServiceInterface {
       .exec();
   }
 
-  public async incCommentCount(offerId: string): Promise<DocumentType<FilmEntity> | null> {
+  public async incCommentCount(filmId: string): Promise<DocumentType<FilmEntity> | null> {
     return this.filmModel
-      .findByIdAndUpdate(offerId, {
+      .findByIdAndUpdate(filmId, {
         '$inc': {
           commentCount: 1,
         }
