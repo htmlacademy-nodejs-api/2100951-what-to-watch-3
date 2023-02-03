@@ -12,19 +12,30 @@ import { fillDTO } from '../../utils/common.js';
 import UserResponse from './response/user.response.js';
 import { ConfigInterface } from '../../common/config/config.interface.js';
 import LoginUserDto from './dto/login-user.dto.js';
+import { ValidateDtoMiddleware } from '../../common/middlewares/validate-dto.middleware.js';
 
 @injectable()
 export default class UserController extends Controller {
   constructor(
-        @inject(Component.LoggerInterface) logger: LoggerInterface,
-        @inject(Component.UserServiceInterface) private readonly userService: UserServiceInterface,
-        @inject(Component.ConfigInterface) private readonly configService: ConfigInterface,
+    @inject(Component.LoggerInterface) logger: LoggerInterface,
+    @inject(Component.UserServiceInterface) private readonly userService: UserServiceInterface,
+    @inject(Component.ConfigInterface) private readonly configService: ConfigInterface,
   ) {
     super(logger);
     this.logger.info('Register routes for UserController…');
 
-    this.addRoute({ path: '/register', method: HttpMethod.Post, handler: this.create });
-    this.addRoute({ path: '/login', method: HttpMethod.Post, handler: this.login });
+    this.addRoute({
+      path: '/register',
+      method: HttpMethod.Post,
+      handler: this.create,
+      middlewares: [new ValidateDtoMiddleware(CreateUserDto)]
+    });
+    this.addRoute({
+      path: '/login',
+      method: HttpMethod.Post,
+      handler: this.login,
+      middlewares: [new ValidateDtoMiddleware(LoginUserDto)]
+    });
   }
 
   public async create(
