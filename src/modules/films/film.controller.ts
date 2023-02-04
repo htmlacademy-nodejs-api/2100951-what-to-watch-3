@@ -15,6 +15,7 @@ import { CommentServiceInterface } from '../comment/comment-service.interface.js
 import { ValidateDtoMiddleware } from '../../common/middlewares/validate-dto.middleware.js';
 import { ValidateObjectIdMiddleware } from '../../common/middlewares/validate-objectid.middleware.js';
 import CommentResponse from '../comment/response/comment.response.js';
+import { DocumentExistsMiddleware } from '../../common/middlewares/document-exists.middlewares.js';
 
 type RequestQuery = {
   limit?: number;
@@ -52,7 +53,10 @@ export default class FilmController extends Controller {
       path: '/:filmId',
       method: HttpMethod.Get,
       handler: this.show,
-      middlewares: [new ValidateObjectIdMiddleware('filmId')]
+      middlewares: [
+        new ValidateObjectIdMiddleware('filmId'),
+        new DocumentExistsMiddleware(this.filmService, 'Film', 'filmId'),
+      ]
     });
     this.addRoute({
       path: '/:filmId',
@@ -60,14 +64,18 @@ export default class FilmController extends Controller {
       handler: this.update,
       middlewares: [
         new ValidateObjectIdMiddleware('filmId'),
-        new ValidateDtoMiddleware(UpdateFilmDto)
+        new ValidateDtoMiddleware(UpdateFilmDto),
+        new DocumentExistsMiddleware(this.filmService, 'Film', 'filmId'),
       ]
     });
     this.addRoute({
       path: '/:filmId',
       method: HttpMethod.Delete,
       handler: this.delete,
-      middlewares: [new ValidateObjectIdMiddleware('filmId')]
+      middlewares: [
+        new ValidateObjectIdMiddleware('filmId'),
+        new DocumentExistsMiddleware(this.filmService, 'Film', 'filmId'),
+      ]
     });
     this.addRoute({ path: '/genres/:genre', method: HttpMethod.Get, handler: this.findByGenre });
     this.addRoute({ path: '/favorite', method: HttpMethod.Get, handler: this.findByFavorites });
@@ -75,7 +83,10 @@ export default class FilmController extends Controller {
       path: '/:filmId/comments',
       method: HttpMethod.Get,
       handler: this.getComments,
-      middlewares: [new ValidateObjectIdMiddleware('filmId')]
+      middlewares: [
+        new ValidateObjectIdMiddleware('filmId'),
+        new DocumentExistsMiddleware(this.filmService, 'Film', 'filmId'),
+      ]
     });
   }
 
