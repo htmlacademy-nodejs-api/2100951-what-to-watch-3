@@ -13,3 +13,4 @@ coverage
 /mongodb/
 /upload/
 /mocks/*.tsv
+/upload/
