@@ -1,17 +1,18 @@
-import {Request, Response} from 'express';
-import {inject} from 'inversify';
-import {StatusCodes} from 'http-status-codes';
-import {Controller} from '../../common/controller/controller.js';
-import {Component} from '../../types/component.types.js';
-import {LoggerInterface} from '../../common/logger/logger.interface.js';
-import {CommentServiceInterface} from './comment-service.interface.js';
+import { Request, Response } from 'express';
+import { inject } from 'inversify';
+import { StatusCodes } from 'http-status-codes';
+import { Controller } from '../../common/controller/controller.js';
+import { Component } from '../../types/component.types.js';
+import { LoggerInterface } from '../../common/logger/logger.interface.js';
+import { CommentServiceInterface } from './comment-service.interface.js';
 import CreateCommentDto from './dto/create-comment.dto.js';
 import HttpError from '../../common/errors/http-error.js';
-import {HttpMethod} from '../../types/http-method.enum.js';
-import {fillDTO} from '../../utils/common.js';
+import { HttpMethod } from '../../types/http-method.enum.js';
+import { fillDTO } from '../../utils/common.js';
 import CommentResponse from './response/comment.response.js';
-import {ValidateDtoMiddleware} from '../../common/middlewares/validate-dto.middleware.js';
+import { ValidateDtoMiddleware } from '../../common/middlewares/validate-dto.middleware.js';
 import { FilmServiceInterface } from '../films/film-service.interface.js';
+import { PrivateRouteMiddleware } from '../../common/middlewares/private-route.middlewares.js';
 
 export default class CommentController extends Controller {
   constructor(
@@ -27,15 +28,17 @@ export default class CommentController extends Controller {
       method: HttpMethod.Post,
       handler: this.create,
       middlewares: [
+        new PrivateRouteMiddleware(),
         new ValidateDtoMiddleware(CreateCommentDto),
       ]
     });
   }
 
   public async create(
-    {body}: Request<object, object, CreateCommentDto>,
+    req: Request<object, object, CreateCommentDto>,
     res: Response
   ): Promise<void> {
+    const { body } = req;
 
     if (!await this.filmService.exists(body.filmId)) {
       throw new HttpError(
@@ -45,7 +48,7 @@ export default class CommentController extends Controller {
       );
     }
 
-    const comment = await this.commentService.create(body);
+    const comment = await this.commentService.create({ ...body, userId: req.user.id });
     await this.filmService.incCommentCount(body.filmId);
     this.created(res, fillDTO(CommentResponse, comment));
   }

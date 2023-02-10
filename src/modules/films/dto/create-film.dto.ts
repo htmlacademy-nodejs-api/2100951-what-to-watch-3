@@ -1,4 +1,4 @@
-import { IsArray, IsDateString, IsEnum, IsInt, IsMongoId, IsString, Length } from 'class-validator';
+import { IsArray, IsDateString, IsEnum, IsInt, IsString, Length } from 'class-validator';
 import { GenresType } from '../../../types/genres-type.enum.js';
 
 export default class CreateFilmDto {
@@ -36,7 +36,6 @@ export default class CreateFilmDto {
   @IsInt({ message: 'runTime is required' })
   public runTime!: number;
 
-  @IsMongoId({ message: 'userId field must be valid an id' })
   public userId!: string;
 
   @IsString({ message: 'posterImage is required' })
