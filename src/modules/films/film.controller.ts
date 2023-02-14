@@ -8,7 +8,7 @@ import { HttpMethod } from '../../types/http-method.enum.js';
 import { StatusCodes } from 'http-status-codes';
 import { fillDTO } from '../../utils/common.js';
 import { FilmServiceInterface } from './film-service.interface.js';
-import FilmResponse from './responce/film.responce.js';
+import FilmResponse from './response/film.response.js';
 import CreateFilmDto from './dto/create-film.dto.js';
 import UpdateFilmDto from './dto/update-film.dto.js';
 import { CommentServiceInterface } from '../comment/comment-service.interface.js';
