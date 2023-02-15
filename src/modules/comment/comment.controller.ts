@@ -13,14 +13,16 @@ import CommentResponse from './response/comment.response.js';
 import { ValidateDtoMiddleware } from '../../common/middlewares/validate-dto.middleware.js';
 import { FilmServiceInterface } from '../films/film-service.interface.js';
 import { PrivateRouteMiddleware } from '../../common/middlewares/private-route.middlewares.js';
+import { ConfigInterface } from '../../common/config/config.interface.js';
 
 export default class CommentController extends Controller {
   constructor(
     @inject(Component.LoggerInterface) logger: LoggerInterface,
     @inject(Component.CommentServiceInterface) private readonly commentService: CommentServiceInterface,
+    @inject(Component.ConfigInterface) configService: ConfigInterface,
     @inject(Component.FilmServiceInterface) private readonly filmService: FilmServiceInterface,
   ) {
-    super(logger);
+    super(logger, configService);
 
     this.logger.info('Register routes for CommentController…');
     this.addRoute({

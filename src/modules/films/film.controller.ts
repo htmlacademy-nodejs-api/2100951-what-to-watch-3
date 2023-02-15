@@ -17,6 +17,7 @@ import { ValidateObjectIdMiddleware } from '../../common/middlewares/validate-ob
 import CommentResponse from '../comment/response/comment.response.js';
 import { DocumentExistsMiddleware } from '../../common/middlewares/document-exists.middlewares.js';
 import { PrivateRouteMiddleware } from '../../common/middlewares/private-route.middlewares.js';
+import { ConfigInterface } from '../../common/config/config.interface.js';
 
 type RequestQuery = {
   limit?: number;
@@ -35,9 +36,10 @@ export default class FilmController extends Controller {
   constructor(
     @inject(Component.LoggerInterface) logger: LoggerInterface,
     @inject(Component.FilmServiceInterface) private readonly filmService: FilmServiceInterface,
-    @inject(Component.CommentServiceInterface) private readonly commentService: CommentServiceInterface
+    @inject(Component.CommentServiceInterface) private readonly commentService: CommentServiceInterface,
+    @inject(Component.ConfigInterface) configService: ConfigInterface,
   ) {
-    super(logger);
+    super(logger, configService);
 
     this.logger.info('Register routes for FilmController...');
 
