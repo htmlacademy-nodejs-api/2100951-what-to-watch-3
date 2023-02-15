@@ -10,6 +10,7 @@ import { ControllerInterface } from '../common/controller/controller.interface.j
 import { ExceptionFilterInterface } from '../common/errors/exception-filter.interface.js';
 import { AuthenticateMiddleware } from '../common/middlewares/authenticate.middlewares.js';
 import { getFullServerPath } from '../utils/common.js';
+import cors from 'cors';
 
 @injectable()
 export default class Application {
@@ -50,6 +51,7 @@ export default class Application {
 
   public initExceptionFilters() {
     this.expressApp.use(this.exceptionFilter.catch.bind(this.exceptionFilter));
+    this.expressApp.use(cors());
   }
 
   public async init() {
