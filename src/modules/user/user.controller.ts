@@ -15,7 +15,7 @@ import LoginUserDto from './dto/login-user.dto.js';
 import { ValidateDtoMiddleware } from '../../common/middlewares/validate-dto.middleware.js';
 import { ValidateObjectIdMiddleware } from '../../common/middlewares/validate-objectid.middleware.js';
 import { UploadFileMiddleware } from '../../common/middlewares/upload-file.middlewares.js';
-import LoggedUserResponse from './response/logger-user.responce.js';
+import LoggedUserResponse from './response/logged-user.responce.js';
 
 export const JWT_ALGORITM = 'HS256';
 
@@ -99,7 +99,10 @@ export default class UserController extends Controller {
       { email: user.email, id: user.id }
     );
 
-    this.ok(res, fillDTO(LoggedUserResponse, { email: user.email, token }));
+    this.ok(res, {
+      ...fillDTO(LoggedUserResponse, user),
+      token
+    });
   }
 
   public async uploadAvatar(req: Request, res: Response) {
@@ -110,7 +113,7 @@ export default class UserController extends Controller {
 
   public async checkAuthenticate(req: Request, res: Response) {
 
-    if (! req.user) {
+    if (!req.user) {
       throw new HttpError(
         StatusCodes.UNAUTHORIZED,
         'Unauthorized',
