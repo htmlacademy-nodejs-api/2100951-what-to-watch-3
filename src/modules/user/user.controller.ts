@@ -16,6 +16,7 @@ import { ValidateDtoMiddleware } from '../../common/middlewares/validate-dto.mid
 import { ValidateObjectIdMiddleware } from '../../common/middlewares/validate-objectid.middleware.js';
 import { UploadFileMiddleware } from '../../common/middlewares/upload-file.middlewares.js';
 import LoggedUserResponse from './response/logged-user.responce.js';
+import UploadUserAvatarResponse from './response/upload-user-avatar.responce.js';
 
 export const JWT_ALGORITM = 'HS256';
 
@@ -106,9 +107,10 @@ export default class UserController extends Controller {
   }
 
   public async uploadAvatar(req: Request, res: Response) {
-    this.created(res, {
-      filepath: req.file?.path
-    });
+    const {userId} = req.params;
+    const uploaFile = {avatarPath: req.file?.filename};
+    await this.userService.updateById(userId, uploaFile);
+    this.created(res, fillDTO(UploadUserAvatarResponse, uploaFile));
   }
 
   public async checkAuthenticate(req: Request, res: Response) {
