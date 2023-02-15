@@ -18,6 +18,9 @@ import CommentResponse from '../comment/response/comment.response.js';
 import { DocumentExistsMiddleware } from '../../common/middlewares/document-exists.middlewares.js';
 import { PrivateRouteMiddleware } from '../../common/middlewares/private-route.middlewares.js';
 import { ConfigInterface } from '../../common/config/config.interface.js';
+import UploadPosterResponse from './response/upload-poster.response.js';
+import UploadBackgroundImageResponse from './response/upload-background-image.response.js';
+import { UploadFileMiddleware } from '../../common/middlewares/upload-file.middlewares.js';
 
 type RequestQuery = {
   limit?: number;
@@ -102,6 +105,26 @@ export default class FilmController extends Controller {
         new DocumentExistsMiddleware(this.filmService, 'Film', 'filmId'),
       ]
     });
+    this.addRoute({
+      path: '/:filmId/poster',
+      method: HttpMethod.Post,
+      handler: this.uploadPoster,
+      middlewares: [
+        new PrivateRouteMiddleware(),
+        new ValidateObjectIdMiddleware('filmId'),
+        new UploadFileMiddleware(this.configService.get('UPLOAD_DIRECTORY'), 'poster'),
+      ]
+    });
+    this.addRoute({
+      path: '/:filmId/backgroundImage',
+      method: HttpMethod.Post,
+      handler: this.uploadBackgroundImage,
+      middlewares: [
+        new PrivateRouteMiddleware(),
+        new ValidateObjectIdMiddleware('filmId'),
+        new UploadFileMiddleware(this.configService.get('UPLOAD_DIRECTORY'), 'backgroundImage'),
+      ]
+    });
   }
 
   public async index(
@@ -176,5 +199,18 @@ export default class FilmController extends Controller {
     this.ok(res, fillDTO(CommentResponse, comments));
   }
 
+  public async uploadBackgroundImage(req: Request<core.ParamsDictionary | ParamsGetFilm>, res: Response) {
+    const { filmId } = req.params;
+    const updateDto = { backgroundImage: req.file?.filename };
+    await this.filmService.updateById(filmId, updateDto);
+    this.created(res, fillDTO(UploadBackgroundImageResponse, { updateDto }));
+  }
+
+  public async uploadPoster(req: Request<core.ParamsDictionary | ParamsGetFilm>, res: Response) {
+    const { filmId } = req.params;
+    const updateDto = { posterImage: req.file?.filename };
+    await this.filmService.updateById(filmId, updateDto);
+    this.created(res, fillDTO(UploadPosterResponse, { updateDto }));
+  }
 }
 
