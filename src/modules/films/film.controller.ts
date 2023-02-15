@@ -21,6 +21,7 @@ import { ConfigInterface } from '../../common/config/config.interface.js';
 import UploadPosterResponse from './response/upload-poster.response.js';
 import UploadBackgroundImageResponse from './response/upload-background-image.response.js';
 import { UploadFileMiddleware } from '../../common/middlewares/upload-file.middlewares.js';
+import HttpError from '../../common/errors/http-error.js';
 
 type RequestQuery = {
   limit?: number;
@@ -158,22 +159,39 @@ export default class FilmController extends Controller {
   }
 
   public async update(
-    { body, params }: Request<core.ParamsDictionary | ParamsGetFilm, Record<string, unknown>, UpdateFilmDto>,
+    { body, params, user }: Request<core.ParamsDictionary | ParamsGetFilm, Record<string, unknown>, UpdateFilmDto>,
     res: Response
   ): Promise<void> {
+    const film = await this.filmService.findById(params.filmId);
+
+    if (film?.userId?._id.toString() !== user.id) {
+      throw new HttpError(
+        StatusCodes.FORBIDDEN,
+        `User don't have root to change film (id: ${params.filmId})`,
+        'FilmController'
+      );
+    }
     const updatedFilm = await this.filmService.updateById(params.filmId, body);
     this.ok(res, fillDTO(FilmResponse, updatedFilm));
   }
 
   public async delete(
-    { params }: Request<core.ParamsDictionary | ParamsGetFilm>,
+    { params, user }: Request<core.ParamsDictionary | ParamsGetFilm>,
     res: Response
   ): Promise<void> {
-    const { filmId } = params;
-    const film = await this.filmService.deleteById(filmId);
-    await this.commentService.deleteByFilmId(filmId);
+    const film = await this.filmService.findById(params.filmId);
 
-    this.noContent(res, film);
+    if (film?.userId?._id.toString() !== user.id) {
+      throw new HttpError(
+        StatusCodes.FORBIDDEN,
+        `User don't have root to change film (id: ${params.filmId})`,
+        'FilmController'
+      );
+    }
+    const deletedFilm = await this.filmService.deleteById(params.filmId);
+
+    await this.commentService.deleteByFilmId(params.filmId);
+    this.noContent(res, deletedFilm);
   }
 
   public async findByGenre(
