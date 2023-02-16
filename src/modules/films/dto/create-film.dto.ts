@@ -38,12 +38,6 @@ export default class CreateFilmDto {
 
   public userId!: string;
 
-  @IsString({ message: 'posterImage is required' })
-  public posterImage!: string;
-
-  @IsString({ message: 'backgroungImage is required' })
-  public backgroundImage!: string;
-
   @IsString({ message: 'backgroundColor is required' })
   public backgroundColor!: string;
 }

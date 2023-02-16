@@ -62,7 +62,8 @@ export default class FilmService implements FilmServiceInterface {
           $addFields: {
             isFavorite: {
               $in: ['$_id', favorites]
-            }
+            },
+            userId: '$user'
           }
         }
       ])
@@ -192,5 +193,17 @@ export default class FilmService implements FilmServiceInterface {
       {
         rating: newRating
       });
+  }
+
+  public async changeFavoriteStatus(filmId: string, status: boolean)
+  : Promise<DocumentType<FilmEntity> | null> {
+    return this.filmModel
+      .findByIdAndUpdate(filmId, {
+        '$set': {
+          isFavorite: status,
+        }
+      }, { new: true })
+      .populate('userId')
+      .exec();
   }
 }
