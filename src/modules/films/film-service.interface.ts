@@ -16,4 +16,5 @@ export interface FilmServiceInterface extends DocumentExistsInterface{
   changeFavoriteStatus(filmId: string, status: boolean): Promise<DocumentType<FilmEntity> | null>;
   exists(documentId: string): Promise<boolean>;
   countRating(filmId: string, rating: number): Promise<DocumentType<FilmEntity> | null>;
+  findPromo(): Promise<DocumentType<FilmEntity>[] | null>;
 }

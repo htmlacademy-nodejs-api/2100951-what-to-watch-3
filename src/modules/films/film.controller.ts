@@ -126,6 +126,7 @@ export default class FilmController extends Controller {
         new UploadFileMiddleware(this.configService.get('UPLOAD_DIRECTORY'), 'backgroundImage'),
       ]
     });
+    this.addRoute({path: '/promo', method: HttpMethod.Get, handler: this.getPromo});
   }
 
   public async index(
@@ -229,6 +230,13 @@ export default class FilmController extends Controller {
     const updateDto = { posterImage: req.file?.filename };
     await this.filmService.updateById(filmId, updateDto);
     this.created(res, fillDTO(UploadPosterResponse, { updateDto }));
+  }
+
+  public async getPromo(_req: Request, res: Response): Promise<void> {
+    const result = await this.filmService.findPromo();
+    this.ok(
+      res, fillDTO(FilmResponse, result)
+    );
   }
 }
 

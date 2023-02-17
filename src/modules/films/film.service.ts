@@ -206,4 +206,27 @@ export default class FilmService implements FilmServiceInterface {
       .populate('userId')
       .exec();
   }
+
+  public async findPromo(): Promise<DocumentType<FilmEntity>[] | null> {
+    return this.filmModel
+      .aggregate([
+        {
+          $sample: {size: 1},
+        },
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'userId',
+            foreignField: '_id',
+            as: 'user'
+          }
+        },
+        {
+          $unwind: '$user'
+        },
+        {
+          $unset: 'user._id'
+        },
+      ]);
+  }
 }
