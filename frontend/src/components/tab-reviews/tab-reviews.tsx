@@ -3,7 +3,7 @@ import Spinner from '../spinner/spinner';
 import { getReviews, getIsLoading } from '../../store/reviews-data/selectors';
 import { fetchReviews } from '../../store/api-actions';
 import { useAppSelector, useAppDispatch } from '../../hooks/';
-import { formatReviewDate } from '../../util';
+import { formatReviewDate } from '../../utils/util';
 
 type TabReviewsProps = {
   id: string;

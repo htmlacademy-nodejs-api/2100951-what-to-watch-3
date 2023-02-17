@@ -1,4 +1,4 @@
-import { GenreType } from '../../types/genres.js';
+import { GenreType } from '../../const.js';
 
 export default class CreateFilmDto {
   public name!: string;
@@ -10,7 +10,7 @@ export default class CreateFilmDto {
   public genre!: GenreType;
 
   public released!: number;
-  
+
   public posterImage!: string;
 
   public previewVideoLink!: string;

@@ -1,5 +1,5 @@
 import { Film } from '../../types/film';
-import { getRatingText } from '../../util';
+import { getRatingText } from '../../utils/util';
 
 type TabOverviewProps = {
   film: Film;

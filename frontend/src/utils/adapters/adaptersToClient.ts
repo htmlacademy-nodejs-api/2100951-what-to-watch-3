@@ -1,12 +1,12 @@
-import CommentDto from "../../dto/comment/comment.dto.js";
-import FilmDto from "../../dto/films/films.dto.js";
-import UpdateFilmDto from "../../dto/films/update-film.dto.js";
-import UserWithTokenDto from "../../dto/user/user-with-token.dto.js";
-import UserDto from "../../dto/user/user.dto.js";
+import CommentDto from '../../dto/comment/comment.dto.js';
+import FilmDto from '../../dto/films/films.dto.js';
+import UpdateFilmDto from '../../dto/films/update-film.dto.js';
+import UserWithTokenDto from '../../dto/user/user-with-token.dto.js';
+import UserDto from '../../dto/user/user.dto.js';
 
-import { Film } from "../../types/film.js";
-import { Review } from "../../types/review.js";
-import { User } from "../../types/user.js";
+import { Film } from '../../types/film.js';
+import { Review } from '../../types/review.js';
+import { User } from '../../types/user.js';
 
 
 export const adaptLoginToClient = (user: UserWithTokenDto): User => ({

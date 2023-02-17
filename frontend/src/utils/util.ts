@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
-import { GenreType } from './types/genres.js';
+import { GenreType } from '../const.js';
 dayjs.extend(duration);
 
 export const getRatingText = (rating: number) => {

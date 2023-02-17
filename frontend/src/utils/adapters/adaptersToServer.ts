@@ -8,7 +8,7 @@ import { NewFilm } from '../../types/new-film.js';
 import { NewReview } from '../../types/new-review.js';
 import { NewUser } from '../../types/new-user.js';
 import { User } from '../../types/user.js';
-import { checkGenre, getTime } from '../../util';
+import { getTime, checkGenre } from '../util.js';
 
 export const adaptSignupToServer = (user: NewUser): CreateUserDto => ({
   name: user.name,
