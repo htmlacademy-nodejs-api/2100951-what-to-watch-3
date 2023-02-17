@@ -1,5 +1,9 @@
 export default class CreateCommentDto {
     public text!: string;
-  
-    public offerId!: string;
-  }
+
+    public rating!: number;
+
+    public postDate!: string;
+    
+    public filmId!: string;
+}

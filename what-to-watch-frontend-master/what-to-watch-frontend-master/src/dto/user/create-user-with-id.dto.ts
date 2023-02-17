@@ -3,11 +3,9 @@ export default class CreateUserWithIdDto {
   
     public email!: string;
   
-    public avatarPath!: string;
+    public avatarUrl!: string;
   
-    public firstname!: string;
-  
-    public lastname!: string;
+    public name!: string;
   
     public password!: string;
   }

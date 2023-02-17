@@ -1,11 +1,9 @@
 export default class UserWithTokenDto {
-    public email!: string ;
-  
-    public avatarPath!: string;
-  
-    public firstname!: string;
-  
-    public lastname!: string;
-  
+    public name!: string;
+
+    public email!: string;
+
+    public avatarUrl!: string;
+
     public token!: string;
-  }
+}

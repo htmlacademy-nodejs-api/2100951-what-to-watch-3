@@ -1,5 +1,5 @@
-import { GenreType } from "../../types/genres.js";
-import UserDto from "../user/user.dto.js";
+import { GenreType } from '../../types/genres.js';
+import UserDto from '../user/user.dto.js';
 
 export default class FilmDto {
     public id!: string;

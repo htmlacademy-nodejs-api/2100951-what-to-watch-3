@@ -1,9 +1,7 @@
 export default class UserDto {
     public email!: string ;
   
-    public avatarPath!: string;
+    public avatarUrl!: string;
   
-    public firstname!: string;
-  
-    public lastname!: string;
+    public name!: string;
   }
