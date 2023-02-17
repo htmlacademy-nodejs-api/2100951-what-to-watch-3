@@ -29,7 +29,7 @@ export default class Application {
   }
 
   public initRoutes() {
-    this.expressApp.use('/categories', this.filmController.router);
+    this.expressApp.use('/films', this.filmController.router);
     this.expressApp.use('/users', this.userController.router);
     this.expressApp.use('/comments', this.commentController.router);
   }
@@ -47,11 +47,11 @@ export default class Application {
 
     const authenticateMiddleware = new AuthenticateMiddleware(this.config.get('JWT_SECRET'));
     this.expressApp.use(authenticateMiddleware.execute.bind(authenticateMiddleware));
+    this.expressApp.use(cors());
   }
 
   public initExceptionFilters() {
     this.expressApp.use(this.exceptionFilter.catch.bind(this.exceptionFilter));
-    this.expressApp.use(cors());
   }
 
   public async init() {

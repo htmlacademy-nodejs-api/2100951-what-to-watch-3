@@ -79,7 +79,7 @@ export default class FilmService implements FilmServiceInterface {
           $lookup: {
             from: 'comments',
             localField: '_id',
-            foreignField: 'movieId',
+            foreignField: 'filmId',
             as: 'commentData'
           }
         },
@@ -131,7 +131,7 @@ export default class FilmService implements FilmServiceInterface {
           $lookup: {
             from: 'comments',
             localField: '_id',
-            foreignField: 'movieId',
+            foreignField: 'filmId',
             as: 'commentData'
           }
         },
@@ -183,9 +183,9 @@ export default class FilmService implements FilmServiceInterface {
   }
 
   public async countRating(filmId: string, rating: number): Promise<DocumentType<FilmEntity> | null> {
-    const movie = await this.findById(filmId);
-    const oldRating = movie?.rating ?? 0;
-    const ratingsCount = movie?.comments ?? 0;
+    const film = await this.findById(filmId);
+    const oldRating = film?.rating ?? 0;
+    const ratingsCount = film?.comments ?? 0;
     const newRating = Number(((rating + oldRating * ratingsCount) / (ratingsCount + 1)).toFixed(1));
 
     return await this.updateById(
