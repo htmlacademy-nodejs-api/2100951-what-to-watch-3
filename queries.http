@@ -16,7 +16,7 @@ Content-Type: application/json
 
 POST http://localhost:5000/films HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRvcmFuc0BvdmVybG9vay5uZXQiLCJpZCI6IjYzZGJiYTE3YWU4MmZmYTExZmEwY2M2NyIsImlhdCI6MTY3NTM0NzcyNiwiZXhwIjoxNjc1NTIwNTI2fQ.7Vb4nBQqNoS7n_qoJQRKYDV0n8SlduoyRxp2KiV-Svw
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3RAbG9zdC5sb2NhbCIsImlkIjoiNjNmMGViNmY4NzNlMDRkZDI4Y2I3YTNkIiwiaWF0IjoxNjc2NzMzMzE0LCJleHAiOjE2NzY5MDYxMTR9.Wh6cmUOsYIsKAY0soqHGizXQSAnW3uTLrJozQyLTEWM
 
 {
 "name": "Matrix",
@@ -48,7 +48,7 @@ Content-Type: application/json
 
 PUT http://localhost:5000/films/63cc15203c3a933d1b83b9e2 HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRvcmFuc0BvdmVybG9vay5uZXQiLCJpZCI6IjYzZGJiYTE3YWU4MmZmYTExZmEwY2M2NyIsImlhdCI6MTY3NTQzNjAwOCwiZXhwIjoxNjc1NjA4ODA4fQ.-J6ecrijT4m3xu8O9P8E_Dtu6GsxcVWvoknU00VI3lI
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3RAbG9zdC5sb2NhbCIsImlkIjoiNjNmMGViNmY4NzNlMDRkZDI4Y2I3YTNkIiwiaWF0IjoxNjc2NzMzMzE0LCJleHAiOjE2NzY5MDYxMTR9.Wh6cmUOsYIsKAY0soqHGizXQSAnW3uTLrJozQyLTEWM
 
 {
   "name": "Star wars"
@@ -71,13 +71,14 @@ GET http://localhost:5000/films/?genre=Crime HTTP/1.1
 ## Получить список фильмов "К просмотру"
 
 GET http://localhost:5000/films/favorite HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImFubkBvdmVybG9vay5uZXQiLCJpZCI6IjYzZGQ2YzU0YjJhN2ZmNTUzNmZlN2I5NSIsImlhdCI6MTY3NTU0MjM2MywiZXhwIjoxNjc1NzE1MTYzfQ.oFo6FgznZIkBk_c3e1qmmtbmb_D0v5SXjLFx10BcWRI
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3RAbG9zdC5sb2NhbCIsImlkIjoiNjNmMGViNmY4NzNlMDRkZDI4Y2I3YTNkIiwiaWF0IjoxNjc2NzMzMzE0LCJleHAiOjE2NzY5MDYxMTR9.Wh6cmUOsYIsKAY0soqHGizXQSAnW3uTLrJozQyLTEWM
+
 ###
 
 ## Изменить статус "К просмотру" у фильма
 
 POST http://localhost:5000/filmsfavorite/63cc15203c3a933d1b83b9e7/1 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImFubkBvdmVybG9vay5uZXQiLCJpZCI6IjYzZGQ2YzU0YjJhN2ZmNTUzNmZlN2I5NSIsImlhdCI6MTY3NTU0MjM2MywiZXhwIjoxNjc1NzE1MTYzfQ.oFo6FgznZIkBk_c3e1qmmtbmb_D0v5SXjLFx10BcWRI
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3RAbG9zdC5sb2NhbCIsImlkIjoiNjNmMGViNmY4NzNlMDRkZDI4Y2I3YTNkIiwiaWF0IjoxNjc2NzMzMzE0LCJleHAiOjE2NzY5MDYxMTR9.Wh6cmUOsYIsKAY0soqHGizXQSAnW3uTLrJozQyLTEWM
 
 ###
 
@@ -101,7 +102,7 @@ GET http://localhost:5000/films/63d7fecee1408baefa9c0428/comments HTTP/1.1
 
 ## Загрузка постера для фильма
 POST http://localhost:5000/films/63cc15203c3a933d1b83b9e7/image HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6Im1pc3RlcnR3aXN0ZXJAZ21haWwuY29tIiwiaWQiOiI2M2RlMWMwYzkwMTExZWNiYjE3ZmQ5MzYiLCJpYXQiOjE2NzU4NzIxMzQsImV4cCI6MTY3NjA0NDkzNH0.x7TfRZOAiAgKeti1Hk45M8GAB-OR6dMygaOme8GSqs8
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3RAbG9zdC5sb2NhbCIsImlkIjoiNjNmMGViNmY4NzNlMDRkZDI4Y2I3YTNkIiwiaWF0IjoxNjc2NzMzMzE0LCJleHAiOjE2NzY5MDYxMTR9.Wh6cmUOsYIsKAY0soqHGizXQSAnW3uTLrJozQyLTEWM
 Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
 
 ------WebKitFormBoundary7MA4YWxkTrZu0gW
@@ -121,7 +122,7 @@ Content-Type: application/json
 
 {
 "email": "test@lost.local",
-"userName": "Emilia",
+"name": "Emilia",
 "password": "123456"
 }
 
@@ -134,7 +135,7 @@ Content-Type: application/json
 
 {
 "email": "test@lost.local", 
-"userName": "Emilia",
+"name": "Emilia",
 "password": "123456"
 }
 
@@ -156,6 +157,6 @@ Content-Type: image/png
 
 ## Проверка токена пользователя
 GET http://localhost:5000/users/login HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRvcmFuc0BvdmVybG9vay5uZXQiLCJpZCI6IjYyOTM0MDgyZDFlMDU5MDBlMmVmYWVjMyIsImlhdCI6MTY1MzkwMzA1OSwiZXhwIjoxNjU0MDc1ODU5fQ.yMN3DID7PoMO1I4-fgwjGVWjdfnpQsCA8TL02APb-rU
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3RAbG9zdC5sb2NhbCIsImlkIjoiNjNmMGViNmY4NzNlMDRkZDI4Y2I3YTNkIiwiaWF0IjoxNjc2NzMzMzE0LCJleHAiOjE2NzY5MDYxMTR9.Wh6cmUOsYIsKAY0soqHGizXQSAnW3uTLrJozQyLTEWM
 
 ###

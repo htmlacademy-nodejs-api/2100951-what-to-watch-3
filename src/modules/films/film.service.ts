@@ -208,6 +208,7 @@ export default class FilmService implements FilmServiceInterface {
   }
 
   public async findPromo(): Promise<DocumentType<FilmEntity>[] | null> {
+
     return this.filmModel
       .aggregate([
         {
