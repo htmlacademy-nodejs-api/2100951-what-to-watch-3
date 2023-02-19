@@ -59,7 +59,7 @@ export class FilmEntity extends defaultClasses.TimeStamps {
     public userId!: Ref<UserEntity>;
 
     @prop({ required: true })
-    public poster!: string;
+    public posterImage!: string;
 
     @prop({ required: true })
     public backgroundImage!: string;
@@ -67,7 +67,7 @@ export class FilmEntity extends defaultClasses.TimeStamps {
     @prop({ required: true })
     public backgroundColor!: string;
 
-    @prop({required: true})
+    @prop({default: false})
     public favorites!: boolean;
 }
 
