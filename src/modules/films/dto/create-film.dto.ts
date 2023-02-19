@@ -15,8 +15,8 @@ export default class CreateFilmDto {
   @IsEnum(GenresType, { message: 'genre is required' })
   public genre!: GenresType;
 
-  @IsDateString({}, { message: 'postDate must be valid ISO date' })
-  public released!: string;
+  @IsInt({ message: 'released must be an integer' })
+  public released!: number;
 
   public rating!: number;
 

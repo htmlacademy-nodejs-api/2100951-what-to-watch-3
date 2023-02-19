@@ -19,7 +19,7 @@ export default class UpdateFilmDto {
   public genre?: string;
 
   @IsOptional()
-  @IsInt({ message: 'postDate must be valid ISO date' })
+  @IsInt({ message: 'released must be integer' })
   public released?: number;
 
   public rating?: number;
@@ -42,7 +42,7 @@ export default class UpdateFilmDto {
   public director?: string;
 
   @IsOptional()
-  @IsInt({ message: 'postDate must be valid ISO date' })
+  @IsInt({ message: 'run time must be valid' })
   public runTime?: number;
 
   @IsOptional()

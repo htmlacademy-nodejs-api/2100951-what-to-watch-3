@@ -1,11 +1,13 @@
-import { IsDateString, IsMongoId, IsString, Length } from 'class-validator';
+import { IsDateString, IsInt, IsMongoId, IsString, Length, Max, Min } from 'class-validator';
 
 export default class CreateCommentDto {
   @IsString({ message: 'text is required' })
   @Length(5, 1024, { message: 'Min length is 5, max is 1024' })
   public text!: string;
 
-  @Length(1, 10, { message: 'Min length is 1, max is 10' })
+  @IsInt({message: 'rating must be an integer'})
+  @Min(1, {message: 'Minimum rating is 1'})
+  @Max(10, {message: 'Maximum rating is 10'})
   public rating!: number;
 
   @IsDateString({}, { message: 'postDate must be a valid ISO date' })
