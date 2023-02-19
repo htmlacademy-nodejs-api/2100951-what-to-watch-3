@@ -137,10 +137,28 @@ export default class FilmController extends Controller {
     this.send(res, StatusCodes.OK, filmResponse);
   }
 
+  public async getPromo(_req: Request, res: Response): Promise<void> {
+    const result = await this.filmService.findPromo();
+    this.ok(
+      res, fillDTO(FilmResponse, result)
+    );
+  }
+
   public async create(
     req: Request<Record<string, unknown>, Record<string, unknown>, CreateFilmDto>,
     res: Response): Promise<void> {
     const { body, user } = req;
+
+    const existFilm = await this.filmService.findById(body.title);
+
+    if (existFilm) {
+      throw new HttpError(
+        StatusCodes.UNPROCESSABLE_ENTITY,
+        `Film with name «${body.title}» exists.`,
+        'FilmController'
+      );
+    }
+
     const result = await this.filmService.create({ ...body, userId: user.id });
     this.send(
       res,
@@ -230,13 +248,6 @@ export default class FilmController extends Controller {
     const updateDto = { posterImage: req.file?.filename };
     await this.filmService.updateById(filmId, updateDto);
     this.created(res, fillDTO(UploadPosterResponse, { updateDto }));
-  }
-
-  public async getPromo(_req: Request, res: Response): Promise<void> {
-    const result = await this.filmService.findPromo();
-    this.ok(
-      res, fillDTO(FilmResponse, result)
-    );
   }
 }
 
