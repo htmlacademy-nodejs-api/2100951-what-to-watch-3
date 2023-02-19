@@ -48,26 +48,26 @@ GET http://localhost:5000/films/promo HTTP/1.1
 
 ## Получить фильм по id
 
-GET http://localhost:5000/films/63f2094a6c714ea34af77522 HTTP/1.1
+GET http://localhost:5000/films/63f21021a1abd8e3539a6cfa HTTP/1.1
 Content-Type: application/json
 
 ###
 
 ## Редактировать фильм
 
-PUT http://localhost:5000/films/63f2094a6c714ea34af77522 HTTP/1.1
+PUT http://localhost:5000/films/63f21021a1abd8e3539a6cfa HTTP/1.1
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3RAbG9zdC5sb2NhbCIsImlkIjoiNjNmMGViNmY4NzNlMDRkZDI4Y2I3YTNkIiwiaWF0IjoxNjc2Nzg5MzAwLCJleHAiOjE2NzY5NjIxMDB9.c6TgR1mwdTMlGCT4slOM-JtQK9ktzIt8oKLp1NP7bsk
 
 {
-  "name": "Star wars"
+  "title": "Star wars"
 }
 
 ###
 
 ## Удалить фильм
 
-DELETE http://localhost:5000/films/63f2094a6c714ea34af77522 HTTP/1.1
+DELETE http://localhost:5000/films/63f21021a1abd8e3539a6cfa HTTP/1.1
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3RAbG9zdC5sb2NhbCIsImlkIjoiNjNmMGViNmY4NzNlMDRkZDI4Y2I3YTNkIiwiaWF0IjoxNjc2Nzg5MzAwLCJleHAiOjE2NzY5NjIxMDB9.c6TgR1mwdTMlGCT4slOM-JtQK9ktzIt8oKLp1NP7bsk
 
 ###
@@ -87,7 +87,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3RAbG9zdC5sb2NhbCIsI
 
 ## Изменить статус "К просмотру" у фильма
 
-POST http://localhost:5000/films/favorite/63f2094a6c714ea34af77522/1 HTTP/1.1
+POST http://localhost:5000/films/favorite/63f21021a1abd8e3539a6cfa/1 HTTP/1.1
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3RAbG9zdC5sb2NhbCIsImlkIjoiNjNmMGViNmY4NzNlMDRkZDI4Y2I3YTNkIiwiaWF0IjoxNjc2Nzg5MzAwLCJleHAiOjE2NzY5NjIxMDB9.c6TgR1mwdTMlGCT4slOM-JtQK9ktzIt8oKLp1NP7bsk
 
 ###
@@ -101,18 +101,18 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3RAbG9zdC5sb2NhbCIsI
 "text": "Discerning travellers and Wes Anderson fans will luxuriate in the glorious Mittel-European kitsch of one of the director's funniest and most exquisitely designed movies in years.",
 "rating": 8,
 "postDate": "2022-12-22T08:45:40.283Z",
-"filmId": "6317c3d6a54ab1061c6434ea"
+"filmId": "63f21021a1abd8e3539a6cfa"
 }
 
 ###
 
 ## Получить комментарии к фильму
-GET http://localhost:5000/films/63f2094a6c714ea34af77522/comments HTTP/1.1
+GET http://localhost:5000/films/63f21021a1abd8e3539a6cfa/comments HTTP/1.1
 
 ###
 
 ## Загрузка постера для фильма
-POST http://localhost:5000/films/63f2094a6c714ea34af77522/image HTTP/1.1
+POST http://localhost:5000/films/63f21021a1abd8e3539a6cfa/image HTTP/1.1
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3RAbG9zdC5sb2NhbCIsImlkIjoiNjNmMGViNmY4NzNlMDRkZDI4Y2I3YTNkIiwiaWF0IjoxNjc2Nzg5MzAwLCJleHAiOjE2NzY5NjIxMDB9.c6TgR1mwdTMlGCT4slOM-JtQK9ktzIt8oKLp1NP7bsk
 Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
 
