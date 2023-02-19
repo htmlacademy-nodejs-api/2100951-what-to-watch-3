@@ -438,7 +438,7 @@ components:
       type: object
 
       properties:
-        name:
+        title:
           type: string
           example: Matrix
 
@@ -454,7 +454,7 @@ components:
           type: number
           example: 2010
 
-        previewVideoLink:
+        previewLink:
           type: string
           example: https://11.react.pages.academy/static/film/video/traffic.mp4
 
@@ -492,7 +492,7 @@ components:
       type: object
 
       properties:
-        name:
+        title:
           type: string
           example: Matrix
 
@@ -517,7 +517,7 @@ components:
           type: number
           example: 0
 
-        previewVideoLink:
+        previewLink:
           type: string
           example: https://11.react.pages.academy/static/film/video/traffic.mp4
 
@@ -565,7 +565,7 @@ components:
       items:
         type: object
         properties:
-          name:
+          title:
             type: string
             example: Matrix
 
@@ -578,7 +578,7 @@ components:
             type: string
             example: Drama
 
-          previewVideoLink:
+          previewLink:
             type: string
             example: https://11.react.pages.academy/static/film/video/traffic.mp4
 
@@ -599,7 +599,7 @@ components:
       items:
         type: object
         properties:
-          message:
+          text:
             type: string
             example: Discerning travellers and Wes Anderson fans will luxuriate in the glorious Mittel-European kitsch of one of the director's funniest and most exquisitely designed movies in years.
 
@@ -657,7 +657,7 @@ components:
           type: string
           example: test@lost.local
 
-        userName:
+        name:
           type: string
           example: Emilia
 
@@ -685,7 +685,7 @@ components:
           type: string
           example: 6317c3d6a54ab1061c6434ea
 
-        userName:
+        name:
           type: string
           example: Emilia
 
@@ -706,7 +706,7 @@ components:
           type: string
           example: 6317c3d6a54ab1061c6434ea
 
-        userName:
+        name:
           type: string
           example: Emilia
 
