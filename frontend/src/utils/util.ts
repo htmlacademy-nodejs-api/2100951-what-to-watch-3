@@ -1,6 +1,5 @@
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
-import { GenreType } from '../const.js';
 dayjs.extend(duration);
 
 export const getRatingText = (rating: number) => {
@@ -41,27 +40,3 @@ export const getTime = () => {
   return now.toISOString();
 };
 
-export const checkGenre = (genre: string) => {
-  switch (genre) {
-    case GenreType.Comedy:
-      return GenreType.Comedy;
-    case GenreType.Crime:
-      return GenreType.Crime;
-    case GenreType.Documentary:
-      return GenreType.Documentary;
-    case GenreType.Drama:
-      return GenreType.Drama;
-    case GenreType.Family:
-      return GenreType.Family;
-    case GenreType.Horror:
-      return GenreType.Horror;
-    case GenreType.Romance:
-      return GenreType.Romance;
-    case GenreType.Scifi:
-      return GenreType.Scifi;
-    case GenreType.Thriller:
-      return GenreType.Thriller;
-    default:
-      return GenreType.Drama;
-  }
-};

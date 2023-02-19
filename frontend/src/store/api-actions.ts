@@ -1,21 +1,16 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosInstance } from 'axios';
-import { NameSpace, APIRoute, DEFAULT_GENRE, HTTP_CODE } from '../const.js';
-import CommentDto from '../dto/comment/comment.dto.js';
-import FilmDto from '../dto/films/films.dto.js';
-import CreateUserWithIdDto from '../dto/user/create-user-with-id.dto.js';
-import UserDto from '../dto/user/user.dto.js';
-import { dropToken, saveToken } from '../services/token.js';
-import { AuthData } from '../types/auth-data.js';
-import { Film, CreateFilm } from '../types/film.js';
-import { NewReview } from '../types/new-review.js';
-import { NewUser } from '../types/new-user.js';
-import { Review } from '../types/review.js';
-import { Token } from '../types/token.js';
-import { User } from '../types/user.js';
-import { adaptFilmToClient, adaptCommentsToClient, adaptCommentToClient, adaptUserToClient, adaptLoginToClient } from '../utils/adapters/adaptersToClient.js';
-import { adaptEditFilmToServer, adaptImageToServer, adaptCreateFilmToServer, adaptCreateCommentToServer, adaptSignupToServer, adaptAvatarToServer } from '../utils/adapters/adaptersToServer.js';
-
+import { Film } from '../types/film';
+import { Review } from '../types/review';
+import { NewReview } from '../types/new-review';
+import { AuthData } from '../types/auth-data';
+import { Token } from '../types/token';
+import { NewFilm } from '../types/new-film';
+import { APIRoute, DEFAULT_GENRE, NameSpace } from '../const';
+import { User } from '../types/user';
+import { NewUser } from '../types/new-user';
+import { dropToken, saveToken } from '../services/token';
+import { adaptsResponseToUser, adaptsFilmToRequest, adaptsResponseToFilm, adaptsResponseToReview, adaptsReviewToRequest } from './adapter';
 
 type Extra = {
   api: AxiosInstance;
@@ -27,7 +22,7 @@ export const fetchFilms = createAsyncThunk<Film[], undefined, { extra: Extra }>(
     const { api } = extra;
     const { data } = await api.get<Film[]>(APIRoute.Films);
 
-    return data;
+    return data.map(adaptsResponseToFilm);
   }
 );
 
@@ -43,16 +38,16 @@ export const fetchFilmsByGenre = createAsyncThunk<
   }
   const { data } = await api.get<Film[]>(route);
 
-  return data;
+  return data.map(adaptsResponseToFilm);
 });
 
 export const fetchFilm = createAsyncThunk<Film, string, { extra: Extra }>(
   `${NameSpace.Film}/fetchFilm`,
   async (id, { extra }) => {
     const { api } = extra;
-    const { data } = await api.get<FilmDto>(`${APIRoute.Films}/${id}`);
+    const { data } = await api.get<Film>(`${APIRoute.Films}/${id}`);
 
-    return adaptFilmToClient(data);
+    return adaptsResponseToFilm(data);
   }
 );
 
@@ -60,38 +55,22 @@ export const editFilm = createAsyncThunk<Film, Film, { extra: Extra }>(
   `${NameSpace.Film}/editFilm`,
   async (filmData, { extra }) => {
     const { api } = extra;
-    const postData = await api.patch<FilmDto>(
+    const { data } = await api.patch<Film>(
       `${APIRoute.Films}/${filmData.id}`,
-      adaptEditFilmToServer(filmData)
+      adaptsFilmToRequest(filmData)
     );
-    if (postData.status === HTTP_CODE.OK && filmData.imageStatus) {
-      const postImageApiRoute = `${APIRoute.Films}/${filmData.id}/image`;
 
-      await api.post(postImageApiRoute, adaptImageToServer(filmData.posterImage), {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
-    }
-    const { data } = postData;
-    return adaptFilmToClient(data);
+    return adaptsResponseToFilm(data);
   }
 );
 
-export const addFilm = createAsyncThunk<Film, CreateFilm, { extra: Extra }>(
+export const addFilm = createAsyncThunk<Film, NewFilm, { extra: Extra }>(
   `${NameSpace.Film}/addFilm`,
   async (filmData, { extra }) => {
     const { api } = extra;
-    const postData = await api.post<FilmDto>(APIRoute.Films, adaptCreateFilmToServer(filmData));
+    const { data } = await api.post<Film>(APIRoute.Films, adaptsFilmToRequest(filmData));
 
-    if (postData.status === HTTP_CODE.CREATED && filmData.imageStatus) {
-      const postImageApiRoute = `${APIRoute.Films}/${postData.data.id}/image`;
-
-      await api.post(postImageApiRoute, adaptImageToServer(filmData.posterImage), {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
-    }
-
-    const { data } = postData;
-    return adaptFilmToClient(data);
+    return adaptsResponseToFilm(data);
   }
 );
 
@@ -99,9 +78,9 @@ export const deleteFilm = createAsyncThunk<Film, string, { extra: Extra }>(
   `${NameSpace.Film}/deleteFilm`,
   async (id, { extra }) => {
     const { api } = extra;
-    const { data } = await api.delete<FilmDto>(`${APIRoute.Films}/${id}`);
+    const { data } = await api.delete<Film>(`${APIRoute.Films}/${id}`);
 
-    return adaptFilmToClient(data);
+    return adaptsResponseToFilm(data);
   }
 );
 
@@ -111,9 +90,9 @@ export const fetchReviews = createAsyncThunk<
   { extra: Extra }
 >(`${NameSpace.Reviews}/fetchReviews`, async (id, { extra }) => {
   const { api } = extra;
-  const { data } = await api.get<CommentDto[]>(`${APIRoute.Films}/${id}/comments`);
+  const { data } = await api.get<Review[]>(`${APIRoute.Comments}/${id}`);
 
-  return adaptCommentsToClient(data);
+  return data.map(adaptsResponseToReview);
 });
 
 export const postReview = createAsyncThunk<
@@ -122,9 +101,9 @@ export const postReview = createAsyncThunk<
   { extra: Extra }
 >(`${NameSpace.Reviews}/postReview`, async ({ id, review }, { extra }) => {
   const { api } = extra;
-  const { data } = await api.post<CommentDto>(`${APIRoute.Comments}`, adaptCreateCommentToServer(review, id));
+  const { data } = await api.post<Review>(`${APIRoute.Comments}/${id}`, adaptsReviewToRequest(review));
 
-  return adaptCommentToClient(data);
+  return adaptsResponseToReview(data);
 });
 
 export const checkAuth = createAsyncThunk<User, undefined, { extra: Extra }>(
@@ -132,8 +111,8 @@ export const checkAuth = createAsyncThunk<User, undefined, { extra: Extra }>(
   async (_arg, { extra }) => {
     const { api } = extra;
     try {
-      const { data } = await api.get<UserDto>(APIRoute.Login);
-      return adaptUserToClient(data);
+      const { data } = await api.get<User>(APIRoute.Login);
+      return adaptsResponseToUser(data);
     } catch (error) {
       dropToken();
       return Promise.reject(error);
@@ -146,22 +125,20 @@ export const login = createAsyncThunk<User, AuthData, { extra: Extra }>(
   async (authData, { extra }) => {
     const { api } = extra;
 
-    const { data } = await api.post<UserDto & { token: Token }>(
+    const { data } = await api.post<User & { token: Token }>(
       APIRoute.Login,
       authData
     );
     const { token } = data;
     saveToken(token);
 
-    return adaptLoginToClient(data);
+    return adaptsResponseToUser(data);
   }
 );
 
 export const logout = createAsyncThunk<void, undefined, { extra: Extra }>(
   `${NameSpace.User}/logout`,
-  async (_arg, { extra }) => {
-    const { api } = extra;
-    await api.delete(APIRoute.Logout);
+  async (_arg) => {
     dropToken();
   }
 );
@@ -174,17 +151,16 @@ export const fetchFavoriteFilms = createAsyncThunk<
   const { api } = extra;
   const { data } = await api.get<Film[]>(APIRoute.Favorite);
 
-  return data;
+  return data.map(adaptsResponseToFilm);
 });
-
 
 export const fetchPromo = createAsyncThunk<Film, undefined, { extra: Extra }>(
   `${NameSpace.Promo}/fetchPromo`,
   async (_arg, { extra }) => {
     const { api } = extra;
-    const { data } = await api.get<FilmDto>(APIRoute.Promo);
+    const { data } = await api.get<Film>(APIRoute.Promo);
 
-    return adaptFilmToClient(data);
+    return adaptsResponseToFilm(data);
   }
 );
 
@@ -192,9 +168,9 @@ export const setFavorite = createAsyncThunk<Film, Film['id'], { extra: Extra }>(
   `${NameSpace.FavoriteFilms}/setFavorite`,
   async (id, { extra }) => {
     const { api } = extra;
-    const { data } = await api.post<FilmDto>(`${APIRoute.Favorite}/${id}/1`);
+    const { data } = await api.post<Film>(`${APIRoute.Favorite}/${id}/1`);
 
-    return adaptFilmToClient(data);
+    return adaptsResponseToFilm(data);
   }
 );
 
@@ -204,22 +180,39 @@ export const unsetFavorite = createAsyncThunk<
   { extra: Extra }
 >(`${NameSpace.FavoriteFilms}/unsetFavorite`, async (id, { extra }) => {
   const { api } = extra;
-  const { data } = await api.post<FilmDto>(`${APIRoute.Favorite}/${id}/0`);
+  const { data } = await api.post<Film>(`${APIRoute.Favorite}/${id}/0`);
 
-  return adaptFilmToClient(data);
+  return adaptsResponseToFilm(data);
 });
 
 export const registerUser = createAsyncThunk<void, NewUser, { extra: Extra }>(
   `${NameSpace.User}/register`,
-  async (userData, { extra }) => {
+  async ({ email, password, name, avatar }, { extra }) => {
     const { api } = extra;
-    const postData = await api.post<CreateUserWithIdDto>(APIRoute.Register, adaptSignupToServer(userData));
-    if (postData.status === HTTP_CODE.CREATED && userData.avatar) {
-      const postAvatarApiRoute = `${APIRoute.User}/${postData.data.id}/avatar`;
+    await api.post<{ id: string }>(APIRoute.Register, {
+      email,
+      password,
+      name,
+    });
 
-      await api.post(postAvatarApiRoute, adaptAvatarToServer(userData.avatar), {
+    const { data } = await api.post<User & { token: Token }>(
+      APIRoute.Login,
+      {
+        email,
+        password,
+      }
+    );
+    const { token } = data;
+    saveToken(token);
+
+    if (avatar) {
+      const payload = new FormData();
+      payload.append('avatar', avatar);
+      await api.post(`users${APIRoute.User}`, payload, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
     }
+
+    dropToken();
   }
 );
